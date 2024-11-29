@@ -1,0 +1,111 @@
+{
+  "pages": [
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationBarTextStyle": "white",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "首页",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/ask/ask",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "咨询"
+      }
+    },
+    {
+      "path": "pages/test/test",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "考核"
+      }
+    },
+    {
+      "path": "pages/activity/activity",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "活动"
+      }
+    },
+    {
+      "path": "pages/my/my",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/index/banner-msg",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "banner详情"
+      }
+    }
+  ],
+  "globalStyle": {
+    "backgroundColor": "@bgColor",
+    "backgroundColorBottom": "@bgColorBottom",
+    "backgroundColorTop": "@bgColorTop",
+    "backgroundTextStyle": "@bgTxtStyle",
+    "navigationBarBackgroundColor": "#000000",
+    "navigationBarTextStyle": "@navTxtStyle",
+    "navigationBarTitleText": "Uni Creator",
+    "navigationStyle": "custom"
+  },
+  // 设置 TabBar
+  "tabBar": {
+    "color": "#333",
+    "selectedColor": "#32b880",
+    "backgroundColor": "#fff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "text": "首页",
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tabs/icon_shouye2.png",
+        "selectedIconPath": "static/tabs/icon_shouye.png"
+      },
+      {
+        "text": "咨询",
+        "pagePath": "pages/ask/ask",
+        "iconPath": "static/tabs/icon_zixun2.png",
+        "selectedIconPath": "static/tabs/icon_zixun.png"
+      },
+      {
+        "text": "考核",
+        "pagePath": "pages/test/test",
+        "iconPath": "static/tabs/icon_kaohe.png",
+        "selectedIconPath": "static/tabs/icon_kaohe_selected.png"
+      },
+      {
+        "text": "活动",
+        "pagePath": "pages/activity/activity",
+        "iconPath": "static/tabs/icon_vector.png",
+        "selectedIconPath": "static/tabs/icon_vector_selected.png"
+      },
+      {
+        "text": "我的",
+        "pagePath": "pages/my/my",
+        "iconPath": "static/tabs/icon_wode2.png",
+        "selectedIconPath": "static/tabs/icon_wode.png"
+      }
+    ]
+  },
+  "subPackages": []
+}

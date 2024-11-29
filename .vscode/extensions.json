@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "vue.volar",
+    "mrmaoddxxaa.create-uniapp-view",
+    "uni-helper.uni-helper-vscode",
+    "uni-helper.uni-app-schemas-vscode",
+    "uni-helper.uni-highlight-vscode",
+    "uni-helper.uni-ui-snippets-vscode",
+    "uni-helper.uni-app-snippets-vscode",
+    "uni-helper.uni-cloud-snippets-vscode",
+    "evils.uniapp-vscode", // uni-app 文档
+    "vue.Official", // vue3 语法支持
+    "editorconfig.editorconfig", // editorconfig
+    "dbaeumer.vscode-eslint", // eslint
+    "esbenp.prettier-vscode" // prettier
+  ]
+}
