@@ -56,6 +56,20 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "banner详情"
       }
+    },
+    {
+      "path": "pages/index/ResourceDetail",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "详情"
+      }
+    },
+    {
+      "path": "pages/index/feedback",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "反馈"
+      }
     }
   ],
   "globalStyle": {
