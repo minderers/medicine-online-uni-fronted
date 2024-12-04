@@ -34,8 +34,9 @@
     <swiper-item>
       <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'">
         <Tag><slot>综合</slot></Tag>
-        <Banner
-      /></scroll-view>
+        <Banner />
+        <News />
+      </scroll-view>
     </swiper-item>
     <!-- 学习 -->
     <swiper-item>
@@ -69,6 +70,7 @@ import { onLoad } from "@dcloudio/uni-app";
 import Banner from "./components/banner.vue";
 import Tag from "./components/tag.vue";
 import NewResource from "./components/newResource.vue";
+import News from "./components/news.vue";
 const navIndex = ref(0);
 const isletIndex = ref(0);
 const scrollH = ref(0); //滚动区域高度
