@@ -22,47 +22,31 @@
     @change="onChangeTab"
     :style="'height:' + scrollH + 'px;padding-bottom:50px'"
   >
-    <!-- 上新资源 -->
-    <swiper-item>
+    <swiper-item v-for="(item, index) in tabBars" :key="index">
       <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'">
-        <Banner />
+        <Tag :categoryId="item.pkId" />
+        <Banner v-if="index === 0 || index === 1 || index === 2" />
+        <NewResource />
       </scroll-view>
     </swiper-item>
-    <!-- 资讯 -->
-    <swiper-item>
-      <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'"
-        ><Banner
-      /></scroll-view>
-    </swiper-item>
-    <!-- 学习 -->
-    <swiper-item>
-      <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'"
-        ><Banner
-      /></scroll-view>
-    </swiper-item>
-    <!-- 知识库 -->
-    <swiper-item>
-      <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'"
-        >4</scroll-view
-      >
-    </swiper-item>
-    <!-- 考核 -->
-    <swiper-item>
-      <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'"
-        >5</scroll-view
-      >
-    </swiper-item>
   </swiper>
+  <div class="feedback mr-2 mb-2 font-weight-bold text-xl" @click="toFeedback">
+    反馈
+  </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Navbar from "@/components/navbar.vue";
 import { onLoad } from "@dcloudio/uni-app";
 import Banner from "./components/banner.vue";
+import Tag from "./components/tag.vue";
+import { queryByLevel, getCategoryListByParentId } from "@/service/tab";
+import NewResource from "./components/newResource.vue";
+
 const navIndex = ref(0);
-const isletIndex = ref(0);
 const scrollH = ref(0); //滚动区域高度
+const tabBars = ref([]);
 
 onLoad(() => {
   uni.getSystemInfo({
@@ -72,20 +56,33 @@ onLoad(() => {
     },
   });
 });
-const tabBars = ref([
-  { name: "上新资源" },
-  { name: "资讯" },
-  { name: "学习" },
-  { name: "知识库" },
-  { name: "考核" },
-]);
+
+const toFeedback = () => {
+  uni.navigateTo({
+    url: "/pages/index/feedback",
+  });
+};
+
+const getTabList = async () => {
+  const res = await queryByLevel();
+  if (res.code === 0 && res.data) {
+    tabBars.value = res.data;
+  }
+};
+
+onMounted(() => {
+  getTabList();
+});
+
 // 点击切换选项卡
-const changeTab = (index) => {
+const changeTab = async (index) => {
   navIndex.value = index;
+  const categoryId = tabBars.value[index].pkId;
+  const subcategories = await getCategoryListByParentId(categoryId);
+  // 处理子分类数据，例如更新状态或渲染子分类
+  console.log(subcategories);
 };
-const checkIndex = (index) => {
-  isletIndex.value = index;
-};
+
 // 滑动切换选项卡
 const onChangeTab = (e) => {
   navIndex.value = e.detail.current;
@@ -96,5 +93,14 @@ const onChangeTab = (e) => {
 .activite {
   color: #32b880;
   border-bottom: #32b880 solid 4rpx;
+}
+.feedback {
+  background: #32b880;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 40rpx 30rpx;
+  color: white;
 }
 </style>
