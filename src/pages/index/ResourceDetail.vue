@@ -101,7 +101,7 @@ const list = ref([
 ]);
 const props = defineProps({
   title: String,
-  viewNum: Number,
+  browseNum: Number,
   starNum: Number,
 });
 const src = ref(
