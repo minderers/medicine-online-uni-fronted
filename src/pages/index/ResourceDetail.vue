@@ -45,7 +45,7 @@
                 src="../../static/index/icon_chakan.png"
                 mode="scaleToFill"
               />
-              <div class="text-gray-400 ml-2">{{ viewNum }}</div>
+              <div class="text-gray-400 ml-2">{{ browseNum }}</div>
             </div>
             <div class="right">
               <image
@@ -57,7 +57,7 @@
           </div>
           <div class="my-2">
             <div class="section ml-2 px-2 font-weight-bold">视频介绍</div>
-            <div class="text-gray-500 ml-20 my-3">{{ title }}</div>
+            <div class="text-gray-500 ml-3 my-3">{{ title }}</div>
           </div>
         </scroll-view>
       </swiper-item>
@@ -80,7 +80,8 @@
 
 <script setup>
 import Back from "@/components/back.vue";
-import { ref, defineProps } from "vue";
+import { ref, defineProps, onMounted, reactive } from "vue";
+import { getCourseDetail } from "@/service/resource";
 const navIndex = ref(0);
 const isletIndex = ref(0);
 const tabBars = ref([{ name: "简介" }, { name: "目录" }]);
@@ -101,12 +102,20 @@ const list = ref([
 ]);
 const props = defineProps({
   title: String,
-  viewNum: Number,
+  browseNum: Number,
   starNum: Number,
+  pkId: Number,
 });
-const src = ref(
-  "https://share-app-api.oss-cn-nanjing.aliyuncs.com/20241201_184846.mp4"
-);
+const src = ref();
+const second = ref("");
+const getVideo = async () => {
+  const res = await getCourseDetail(props.pkId);
+  src.value = res.data.url;
+  second.value = res.data.second;
+};
+onMounted(() => {
+  getVideo();
+});
 const controls = ref(true);
 const autoplay = ref(false);
 const muted = ref(false);
