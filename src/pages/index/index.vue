@@ -31,6 +31,8 @@
         <Banner v-if="index === 0 || index === 1 || index === 2" />
         <NewResource v-if="index === 0" />
         <News v-if="index === 1" />
+        <Study v-if="index === 2" />
+
       </scroll-view>
     </swiper-item>
   </swiper>
@@ -49,6 +51,7 @@ import { queryByLevel, getCategoryListByParentId } from "@/service/tab";
 import NewResource from "./components/newResource.vue";
 
 import News from "./components/news.vue";
+import Study from "./components/study.vue";
 
 const navIndex = ref(0);
 const scrollH = ref(0); //滚动区域高度
