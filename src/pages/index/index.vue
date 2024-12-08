@@ -25,19 +25,24 @@
     <!-- 上新资源 -->
     <swiper-item>
       <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'">
+        <Tag><slot>上新资源</slot></Tag>
         <Banner />
+        <NewResource />
       </scroll-view>
     </swiper-item>
     <!-- 资讯 -->
     <swiper-item>
-      <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'"
-        ><Banner
-      /></scroll-view>
+      <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'">
+        <Tag><slot>综合</slot></Tag>
+        <Banner />
+        <News />
+      </scroll-view>
     </swiper-item>
     <!-- 学习 -->
     <swiper-item>
-      <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'"
-        ><Banner
+      <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'">
+        <Tag><slot>学习</slot></Tag>
+        <Banner
       /></scroll-view>
     </swiper-item>
     <!-- 知识库 -->
@@ -53,6 +58,9 @@
       >
     </swiper-item>
   </swiper>
+  <div class="feedback mr-2 mb-2 font-weight-bold text-xl" @click="toFeedback">
+    反馈
+  </div>
 </template>
 
 <script setup>
@@ -60,6 +68,9 @@ import { ref } from "vue";
 import Navbar from "@/components/navbar.vue";
 import { onLoad } from "@dcloudio/uni-app";
 import Banner from "./components/banner.vue";
+import Tag from "./components/tag.vue";
+import NewResource from "./components/newResource.vue";
+import News from "./components/news.vue";
 const navIndex = ref(0);
 const isletIndex = ref(0);
 const scrollH = ref(0); //滚动区域高度
@@ -72,6 +83,11 @@ onLoad(() => {
     },
   });
 });
+const toFeedback = () => {
+  uni.navigateTo({
+    url: "/pages/index/feedback",
+  });
+};
 const tabBars = ref([
   { name: "上新资源" },
   { name: "资讯" },
@@ -96,5 +112,14 @@ const onChangeTab = (e) => {
 .activite {
   color: #32b880;
   border-bottom: #32b880 solid 4rpx;
+}
+.feedback {
+  background: #32b880;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 40rpx 30rpx;
+  color: white;
 }
 </style>
