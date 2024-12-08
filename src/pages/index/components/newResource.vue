@@ -47,7 +47,7 @@
 <script setup>
 import { onMounted, ref, reactive } from "vue";
 import ResourceDetail from "../ResourceDetail.vue";
-import { getsPageCourseList } from "@/service/resource";
+import { getsPageCourseList, getCourseDetail } from "@/service/resource";
 import { onReachBottom } from "@dcloudio/uni-app";
 
 // 分⻚参数封装：当前⻚和每⻚条数
@@ -93,7 +93,9 @@ const toDetail = (item) => {
       item.title
     )}&browseNum=${encodeURIComponent(
       item.browseNum
-    )}&starNum=${encodeURIComponent(item.starNum)}`,
+    )}&starNum=${encodeURIComponent(item.starNum)}
+    &pkId=${encodeURIComponent(item.pkId)}
+    `,
   });
 };
 // 定义一个计算属性来返回随机颜色
