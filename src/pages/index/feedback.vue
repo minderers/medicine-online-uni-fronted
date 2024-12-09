@@ -39,6 +39,7 @@
         </view>
       </div>
       <div class="">问题图片：</div>
+      <uni-icons type="image-filled" color="" size="100"></uni-icons>
     </div>
   </div>
 </template>
@@ -46,7 +47,6 @@
 <script setup>
 import { ref } from "vue";
 import Back from "@/components/back.vue";
-
 const questionType = ref("请选择问题类型");
 const showPopup = ref(false);
 const list = ref([

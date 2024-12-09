@@ -70,6 +70,13 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "反馈"
       }
+    },
+    {
+      "path": "pages/index/NewsDetail",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "资讯详情"
+      }
     }
   ],
   "globalStyle": {
