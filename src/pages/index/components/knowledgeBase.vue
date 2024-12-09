@@ -34,6 +34,30 @@
               >
                 {{ child.title }}
               </view>
+
+              <view
+                v-if="child.selected && child.type == 0"
+                style="position: absolute; left: 260rpx; top: 0rpx"
+              >
+                <view class="book-list">
+                  <Book
+                    v-for="(book, index) in bookList"
+                    :key="index"
+                    class="book-container"
+                  >
+                    <image
+                      slot="cover"
+                      :src="
+                        'https://medicineonline.oss-cn-hangzhou.aliyuncs.com/' +
+                        book.cover
+                      "
+                    />
+
+                    <view slot="title">{{ book.title }}</view>
+                    <view slot="browseNum">{{ book.browseNum }}</view>
+                  </Book>
+                </view>
+              </view>
               <!-- 展开时显示子节点的子级 -->
               <view
                 v-if="
@@ -65,8 +89,10 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { getResourceCategory } from "@/service/resource";
+import { getResourceCategory, getBookList } from "@/service/resource";
+import book from "./book.vue";
 import { onLoad } from "@dcloudio/uni-app";
+import Book from "./book.vue";
 const navIndex = ref(0);
 const tabBars = ref([]);
 
@@ -105,7 +131,7 @@ const changeTab = async (index) => {
 // 切换子节点展开状态
 const toggleChildVisibility = async (parent, index) => {
   const child = parent.children[index];
-
+  categoryName.value = child.title;
   // 如果当前子节点已展开，则收起它
   if (child.expanded) {
     child.expanded = false; // 收起当前子节点
@@ -138,6 +164,8 @@ const toggleChildVisibility = async (parent, index) => {
       });
     }
   }
+
+  fetchBookList();
 };
 const toggleSubChildSelection = (parent, subChild) => {
   // 清除当前父节点下所有子节点的子级选中状态
@@ -151,8 +179,22 @@ const toggleSubChildSelection = (parent, subChild) => {
   subChild.selected = true;
 };
 
+const bookList = ref([]);
+const categoryName = ref("中医理论基础"); // 设置默认值
+
+const fetchBookList = async () => {
+  try {
+    const response = await getBookList(categoryName.value); // 使用 categoryName.value
+    bookList.value = response.data || [];
+    console.log(bookList.value);
+  } catch (error) {
+    console.error("获取书籍列表失败", error);
+  }
+};
+
 onMounted(() => {
   getTabList();
+  fetchBookList(categoryName);
 });
 
 onLoad(() => {
@@ -218,5 +260,23 @@ onLoad(() => {
 
 .bc-green {
   background-color: #95c9b3;
+}
+
+image {
+  width: 150rpx;
+  height: 200rpx;
+}
+
+.book-list {
+  display: flex;
+  flex-wrap: wrap; /* 使子元素换行 */
+  justify-content: space-between; /* 使子元素间隔均匀 */
+  gap: 10rpx; /* 子元素间的间距 */
+  padding: 10rpx;
+}
+
+.book-container {
+  width: 150rpx; /* 每个 Book 组件占据三分之一宽度，减去间距 */
+  margin-bottom: 20rpx; /* 底部间距 */
 }
 </style>
