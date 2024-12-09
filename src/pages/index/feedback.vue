@@ -12,77 +12,100 @@
           class="input1 my-2"
         />
       </div>
-      <div class="type">
+      <div class="">
         问题类型：
-        <uni-popup :show="showPopupStatus" type="bottom" @change="change">
-          <view class="popup-content">
-            <view class="category-list">
-              <view
-                v-for="(item, index) in categories"
+        <view class="container my-2">
+          <!-- 触发弹出层的按钮 -->
+          <div @click="showPopup = true" class="input2">{{ questionType }}</div>
+
+          <!-- 遮罩层 -->
+          <view v-if="showPopup" class="mask" @click="closePopup"></view>
+
+          <!-- 底部弹出层 -->
+          <view v-if="showPopup" class="popup">
+            <view class="popup-content">
+              <!-- 弹出层内容 -->
+              <div
+                class="type py-3 text-center"
+                v-for="(item, index) in list"
                 :key="index"
-                @click.stop="selectCategory(item)"
+                @click="selectOption(item)"
               >
-                <text :class="{ selected: item.selected }">{{
-                  item.name
-                }}</text>
-              </view>
+                {{ item.name }}
+              </div>
+              <button @click="closePopup">关闭</button>
             </view>
           </view>
-        </uni-popup>
-        <div @click="togglePopup">{{ selectedCategory || "请选择类别" }}</div>
+        </view>
       </div>
+      <div class="">问题图片：</div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watchEffect } from "vue";
+import { ref } from "vue";
 import Back from "@/components/back.vue";
-const showPopupStatus = ref(false);
-const popup = ref(null);
-const show = ref(false);
-const change = (e) => {
-  show.value = e.show;
-};
-const categories = ref([
+
+const questionType = ref("请选择问题类型");
+const showPopup = ref(false);
+const list = ref([
   { name: "类别1", selected: false },
   { name: "类别2", selected: false },
   { name: "类别3", selected: false },
 ]);
-const selectedCategory = ref("请选择类别"); // 存储选中的类别
 
-const selectCategory = (item) => {
-  categories.value.forEach((cat) => (cat.selected = false));
-  item.selected = true;
-  selectedCategory.value = item.name; // 更新选中的类别
-  showPopupStatus.value = false; // 关闭弹窗
+const selectOption = (item) => {
+  questionType.value = item.name;
+  showPopup.value = false;
+};
+
+const closePopup = () => {
+  showPopup.value = false;
 };
 </script>
 
 <style lang="scss" scoped>
 .input1 {
   border: 1px solid gray;
+  padding-top: 10rpx;
+  padding-bottom: 200rpx;
+}
+.container {
+  position: relative;
+}
+
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* 遮罩层样式，半透明黑色 */
+  z-index: 999; /* 确保遮罩层在弹出层下方 */
+}
+
+.popup {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  z-index: 1000; /* 弹出层的 z-index 应该比遮罩层大 */
+  /* 弹出层样式 */
+}
+
+.popup-content {
+  padding: 30px;
+  /* 内容区域样式 */
+}
+
+.type {
+  border-bottom: solid 1px gray;
+}
+.input2 {
+  border: 1px solid gray;
   padding-top: 10px;
   padding-bottom: 20px;
-}
-.popup-content {
-  padding: 20px;
-}
-.category-list {
-  display: flex;
-  flex-direction: column;
-}
-.category-list view {
-  padding: 10px;
-  border-bottom: 1px solid #ccc;
-  cursor: pointer;
-}
-.selected {
-  color: #007aff;
-}
-.type div {
-  cursor: pointer;
-  border: 1px solid #ccc;
-  padding: 10px;
 }
 </style>

@@ -24,10 +24,14 @@
   >
     <swiper-item v-for="(item, index) in tabBars" :key="index">
       <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'">
-        <Tag :categoryId="item.pkId" />
+        <Tag
+          :categoryId="item.pkId"
+          v-if="index === 1 || index === 2 || index === 0"
+        />
         <Banner v-if="index === 0 || index === 1 || index === 2" />
         <NewResource v-if="index === 0" />
         <News v-if="index === 1" />
+
         <Study v-if="index === 2" />
       </scroll-view>
     </swiper-item>
