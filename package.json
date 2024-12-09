@@ -60,11 +60,11 @@
     "@unocss/reset": "^0.64.1",
     "pinia": "^2.2.6",
     "pinia-plugin-unistorage": "^0.1.2",
-    "vue": "3.4.21",
+    "vue": "3.5.11",
     "vue-i18n": "9.6.2"
   },
   "devDependencies": {
-    "@dcloudio/types": "3.4.8",
+    "@dcloudio/types": "3.4.11",
     "@dcloudio/uni-automator": "3.0.0-4020920240930001",
     "@dcloudio/uni-cli-shared": "3.0.0-4020920240930001",
     "@dcloudio/uni-stacktracey": "3.0.0-4020920240930001",

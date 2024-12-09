@@ -24,13 +24,21 @@
   >
     <swiper-item v-for="(item, index) in tabBars" :key="index">
       <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'">
-        <Tag :categoryId="item.pkId" />
+        <Tag
+          :categoryId="item.pkId"
+          v-if="index === 0 || index === 1 || index === 2"
+        />
         <Banner v-if="index === 0 || index === 1 || index === 2" />
-        <NewResource v-if="index ===0"/>
-        <News v-if="index === 1"/>
+        <NewResource v-if="index === 0" />
+        <News v-if="index === 1" />
+
+        <knowledgeBase v-if="index === 3" />
+
+        <Study v-if="index === 2" />
+
+
       </scroll-view>
     </swiper-item>
-
   </swiper>
   <div class="feedback mr-2 mb-2 font-weight-bold text-xl" @click="toFeedback">
     反馈
@@ -47,6 +55,11 @@ import { queryByLevel, getCategoryListByParentId } from "@/service/tab";
 import NewResource from "./components/newResource.vue";
 
 import News from "./components/news.vue";
+
+import knowledgeBase from "./components/knowledgeBase.vue";
+
+import Study from "./components/study.vue";
+
 
 const navIndex = ref(0);
 const scrollH = ref(0); //滚动区域高度
