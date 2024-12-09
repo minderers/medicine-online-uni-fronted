@@ -35,8 +35,6 @@
         <knowledgeBase v-if="index === 3" />
 
         <Study v-if="index === 2" />
-
-
       </scroll-view>
     </swiper-item>
   </swiper>
@@ -59,7 +57,6 @@ import News from "./components/news.vue";
 import knowledgeBase from "./components/knowledgeBase.vue";
 
 import Study from "./components/study.vue";
-
 
 const navIndex = ref(0);
 const scrollH = ref(0); //滚动区域高度
