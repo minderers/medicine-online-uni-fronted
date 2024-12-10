@@ -35,3 +35,10 @@ export const getVideoList = (categoryId) => {
     url: `/resource/video/list?categoryId=${categoryId}`,
   });
 };
+
+export const getPodcastList = (categoryId) => {
+  return http({
+    method: "POST",
+    url: `/resource/podcast/list?categoryId=${categoryId}`,
+  });
+};

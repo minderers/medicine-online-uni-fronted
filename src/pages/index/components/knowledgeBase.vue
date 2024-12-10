@@ -84,12 +84,35 @@
                     >
                       <image slot="cover" :src="video.cover" class="video" />
                       <view slot="title">{{ video.title }}</view>
-                      <span slot="label">{{ video.label }}</span>
+                      <view slot="label">{{ video.label }}</view>
                     </Video>
                   </view>
                 </view>
                 <view v-else class="font-grey">
                   {{ videoList.length > 0 ? "" : "暂无视频" }}
+                </view>
+              </view>
+
+              <view v-if="child.selected && child.type == 2" class="box">
+                <view
+                  v-for="(podcast, index) in podcastList"
+                  :key="podcast.pkId"
+                >
+                  <Video v-if="podcast.cover" class="video-container">
+                    <image slot="cover" :src="podcast.cover" class="video" />
+                    <view slot="title">{{ podcast.title }}</view>
+                    <view slot="label">{{ podcast.label }}</view>
+                  </Video>
+                  <view class="podcast" v-else>
+                    <view>{{ podcast.title }}</view>
+                    <view class="label">
+                      <span
+                        class="label-text"
+                        :style="getRandomColor(podcast.pkId)"
+                        >{{ podcast.label }}</span
+                      >
+                    </view>
+                  </view>
                 </view>
               </view>
             </view>
@@ -106,6 +129,7 @@ import {
   getResourceCategory,
   getBookList,
   getVideoList,
+  getPodcastList,
 } from "@/service/resource";
 import Book from "./book.vue";
 import Video from "./video.vue";
@@ -148,11 +172,10 @@ const changeTab = async (index) => {
 const toggleChildVisibility = async (parent, index) => {
   const child = parent.children[index];
   categoryName.value = child.title;
+  podcastCategoryId.value = child.pkId;
   if (child.children && child.children.length > 0) {
-    console.log("第一个子节点", child.children[0]);
     videoCategoryId.value = child.children[0].pkId;
   } else if (child.children.length < 0) {
-    console.log("没有子节点", child);
     videoCategoryId.value = child.pkId;
   }
 
@@ -191,6 +214,7 @@ const toggleChildVisibility = async (parent, index) => {
 
   fetchBookList();
   fetchVideoList();
+  fetchPodcastList();
 };
 const toggleSubChildSelection = (parent, subChild) => {
   // 清除当前父节点下所有子节点的子级选中状态
@@ -234,10 +258,34 @@ const fetchVideoList = async () => {
   }
 };
 
+const podcastList = ref([]);
+const podcastCategoryId = ref(33);
+const fetchPodcastList = async () => {
+  try {
+    const response = await getPodcastList(podcastCategoryId.value);
+    podcastList.value = response.data || [];
+    console.log("音频列表", podcastList.value);
+  } catch (error) {
+    console.error("获取音频列表失败", error);
+  }
+};
+
+const getRandomColor = (index) => {
+  const colors = ["red", "blue", "green", "orange", "purple"];
+  const color = colors[index % colors.length]; // 使用索引来确保每个标签颜色不同
+  return {
+    borderColor: color,
+    color: color,
+    borderWidth: "1px",
+    borderStyle: "solid",
+  };
+};
+
 onMounted(() => {
   getTabList();
   fetchBookList(categoryName);
   fetchVideoList(videoCategoryId);
+  fetchPodcastList(podcastCategoryId);
 });
 </script>
 
@@ -333,5 +381,21 @@ onMounted(() => {
 
 .font-grey {
   color: grey;
+}
+
+.label {
+  font-size: 22rpx;
+  margin-top: 20rpx;
+}
+
+.label-text {
+  padding: 2rpx 5rpx;
+  border-radius: 10rpx;
+}
+
+.podcast {
+  padding-bottom: 20rpx;
+  padding-top: 20rpx;
+  border-bottom: 1rpx solid #f2f2f2;
 }
 </style>
