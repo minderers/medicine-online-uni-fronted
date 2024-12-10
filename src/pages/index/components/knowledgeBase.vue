@@ -13,8 +13,7 @@
       </view>
     </view>
 
-    <!-- 子节点展示 -->
-    <scroll-view scroll-y :style="'height:' + scrollH + 'px;'">
+    <scroll-view scroll-y>
       <view v-for="(item, index) in tabBars" :key="item.pkId">
         <view v-if="navIndex === index">
           <view
@@ -24,7 +23,6 @@
             <view
               v-for="(child, childIndex) in item.children"
               :key="child.pkId"
-              :style="'height:' + scrollH + 'px;'"
               class="bc-grey"
             >
               <!-- 子节点标题 -->
@@ -35,23 +33,14 @@
                 {{ child.title }}
               </view>
 
-              <view
-                v-if="child.selected && child.type == 0"
-                style="position: absolute; left: 260rpx; top: 0rpx"
-              >
+              <view v-if="child.selected && child.type == 0" class="box">
                 <view class="book-list">
                   <Book
                     v-for="(book, index) in bookList"
                     :key="index"
                     class="book-container"
                   >
-                    <image
-                      slot="cover"
-                      :src="
-                        'https://medicineonline.oss-cn-hangzhou.aliyuncs.com/' +
-                        book.cover
-                      "
-                    />
+                    <image slot="cover" :src="book.cover" class="book-image" />
 
                     <view slot="title">{{ book.title }}</view>
                     <view slot="browseNum">{{ book.browseNum }}</view>
@@ -79,6 +68,30 @@
                   </view>
                 </view>
               </view>
+
+              <view v-if="child.selected && child.type == 1" class="box">
+                <view
+                  v-if="
+                    child.expanded &&
+                    child.children &&
+                    child.children.length > 0
+                  "
+                >
+                  <view>
+                    <Video
+                      v-for="(video, index) in videoList"
+                      class="video-container"
+                    >
+                      <image slot="cover" :src="video.cover" class="video" />
+                      <view slot="title">{{ video.title }}</view>
+                      <span slot="label">{{ video.label }}</span>
+                    </Video>
+                  </view>
+                </view>
+                <view v-else class="font-grey">
+                  {{ videoList.length > 0 ? "" : "暂无视频" }}
+                </view>
+              </view>
             </view>
           </view>
         </view>
@@ -89,10 +102,13 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { getResourceCategory, getBookList } from "@/service/resource";
-import book from "./book.vue";
-import { onLoad } from "@dcloudio/uni-app";
+import {
+  getResourceCategory,
+  getBookList,
+  getVideoList,
+} from "@/service/resource";
 import Book from "./book.vue";
+import Video from "./video.vue";
 const navIndex = ref(0);
 const tabBars = ref([]);
 
@@ -132,6 +148,14 @@ const changeTab = async (index) => {
 const toggleChildVisibility = async (parent, index) => {
   const child = parent.children[index];
   categoryName.value = child.title;
+  if (child.children && child.children.length > 0) {
+    console.log("第一个子节点", child.children[0]);
+    videoCategoryId.value = child.children[0].pkId;
+  } else if (child.children.length < 0) {
+    console.log("没有子节点", child);
+    videoCategoryId.value = child.pkId;
+  }
+
   // 如果当前子节点已展开，则收起它
   if (child.expanded) {
     child.expanded = false; // 收起当前子节点
@@ -166,6 +190,7 @@ const toggleChildVisibility = async (parent, index) => {
   }
 
   fetchBookList();
+  fetchVideoList();
 };
 const toggleSubChildSelection = (parent, subChild) => {
   // 清除当前父节点下所有子节点的子级选中状态
@@ -177,6 +202,11 @@ const toggleSubChildSelection = (parent, subChild) => {
 
   // 设置当前点击的子节点的子级为选中状态
   subChild.selected = true;
+  videoCategoryId.value = subChild.pkId;
+
+  if (videoCategoryId.value) {
+    fetchVideoList(); // 确保异步操作完成
+  }
 };
 
 const bookList = ref([]);
@@ -186,24 +216,28 @@ const fetchBookList = async () => {
   try {
     const response = await getBookList(categoryName.value); // 使用 categoryName.value
     bookList.value = response.data || [];
-    console.log(bookList.value);
+    console.log("书籍列表", bookList.value);
   } catch (error) {
     console.error("获取书籍列表失败", error);
+  }
+};
+
+const videoList = ref([]);
+const videoCategoryId = ref(0);
+const fetchVideoList = async () => {
+  try {
+    const response = await getVideoList(videoCategoryId.value);
+    videoList.value = response.data || [];
+    console.log("视频列表", videoList.value);
+  } catch (error) {
+    console.error("获取视频列表失败", error);
   }
 };
 
 onMounted(() => {
   getTabList();
   fetchBookList(categoryName);
-});
-
-onLoad(() => {
-  uni.getSystemInfo({
-    success: (res) => {
-      console.log(res);
-      scrollH.value = res.windowHeight - res.statusBarHeight;
-    },
-  });
+  fetchVideoList(videoCategoryId);
 });
 </script>
 
@@ -262,7 +296,7 @@ onLoad(() => {
   background-color: #95c9b3;
 }
 
-image {
+.book-image {
   width: 150rpx;
   height: 200rpx;
 }
@@ -278,5 +312,26 @@ image {
 .book-container {
   width: 150rpx; /* 每个 Book 组件占据三分之一宽度，减去间距 */
   margin-bottom: 20rpx; /* 底部间距 */
+}
+
+.box {
+  position: absolute;
+  left: 260rpx;
+  top: 0rpx;
+}
+
+.video {
+  width: 250rpx;
+  height: 150rpx;
+}
+
+.video-container {
+  width: 500rpx;
+  height: 150rpx;
+  margin-bottom: 20rpx;
+}
+
+.font-grey {
+  color: grey;
 }
 </style>

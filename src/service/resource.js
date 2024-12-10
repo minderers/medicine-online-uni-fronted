@@ -28,3 +28,10 @@ export const getBookList = (categoryName) => {
     url: `/resource/book/list?categoryName=${categoryName}`,
   });
 };
+
+export const getVideoList = (categoryId) => {
+  return http({
+    method: "POST",
+    url: `/resource/video/list?categoryId=${categoryId}`,
+  });
+};
