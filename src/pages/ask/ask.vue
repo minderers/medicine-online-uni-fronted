@@ -1,49 +1,80 @@
 <template>
-  <view class="h-15"></view>
-  <view class="flex justify-between align-center banner bg-white mx-2">
-    <view class="back" @click="back">
-      <image
-        src="../../static/nav/icon_sousuo.png"
-        style="height: 40rpx; width: 35rpx"
-      />
-    </view>
-    <view class="content">专家资讯</view>
-    <view class="null"></view>
-  </view>
-  <!-- 子节点展示 -->
-  <scroll-view
-    scroll-y
-    :style="'height:' + scrollH + 'px;'"
-    class="left bc-grey"
-  >
-    <view v-for="category in categories" :key="category.pkId">
-      <view
-        @click="toggleCategory(category)"
-        :class="
-          category.isOpen || category.isSelected ? 'selected' : 'tab-item'
-        "
-      >
-        {{ category.name }}
-      </view>
-      <view v-show="category.isOpen" class="child-list">
-        <view
-          v-for="child in category.childCategory"
-          :key="child.pkId"
-          :class="child.isSelected ? 'item-selected' : 'item-noSelected'"
-          @click.stop="selectChild(category, child)"
-        >
-          {{ child.name }}
+  <view class="container">
+    <view class="search">
+      <view class="h-15"></view>
+      <view class="flex justify-between align-center banner bg-white mx-2">
+        <view class="back" @click="back">
+          <image
+            src="../../static/nav/icon_sousuo.png"
+            style="height: 40rpx; width: 35rpx"
+          />
         </view>
+        <view class="content">专家资讯</view>
+        <view class="null"></view>
       </view>
     </view>
-  </scroll-view>
+    <!-- 子节点展示 -->
+    <view class="flex">
+      <scroll-view
+        scroll-y
+        :style="'height:' + scrollH + 'px;'"
+        class="left bc-grey"
+      >
+        <view v-for="category in categories" :key="category.pkId">
+          <view
+            @click="toggleCategory(category)"
+            :class="
+              category.isOpen || category.isSelected ? 'selected' : 'tab-item'
+            "
+          >
+            {{ category.name }}
+          </view>
+          <view v-show="category.isOpen" class="child-list">
+            <view
+              v-for="child in category.childCategory"
+              :key="child.pkId"
+              :class="child.isSelected ? 'item-selected' : 'item-noSelected'"
+              @click.stop="selectChild(category, child)"
+            >
+              {{ child.name }}
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+      <!-- 专家列表展示 -->
+      <scroll-view
+        scroll-y
+        :style="'height:' + scrollH + 'px;'"
+        class="right bc-white"
+      >
+        <view v-if="professors.length === 0" class="no-data">暂无数据</view>
+        <view class="professor-grid">
+          <view
+            v-for="professor in professors"
+            :key="professor.pkId"
+            class="professor-item"
+          >
+            <view class="avatar-container">
+              <image :src="professor.avatar" class="avatar" />
+            </view>
+            <view class="info">
+              <view class="name">{{ professor.name }}</view>
+              <view class="brief">{{ professor.brief }}</view>
+              <view class="major-field">{{ professor.majorField }}</view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { getCategoryList } from "@/service/ask";
+import { getCategoryList, getProfessorList } from "@/service/ask";
 
 const categories = ref([]);
+const professors = ref([]);
 const scrollH = ref(0);
 
 onMounted(() => {
@@ -78,6 +109,10 @@ async function fetchCategories() {
         categories.value[0].isOpen = true;
         categories.value[0].isSelected = true;
         categories.value[0].childCategory[0].isSelected = true;
+        fetchProfessors(
+          categories.value[0],
+          categories.value[0].childCategory[0]
+        );
       }
     } else {
       console.error("Failed to fetch categories:", response.message);
@@ -111,15 +146,44 @@ function selectChild(category, child) {
 
   // 设置当前点击的子节点为选中状态
   child.isSelected = true;
+
+  // 获取专家列表
+  fetchProfessors(category, child);
 }
 
 function back() {
   // 返回按钮的点击事件处理函数
   console.log("Back button clicked");
 }
+
+async function fetchProfessors(category, child) {
+  try {
+    const response = await getProfessorList({
+      categoryId: child.pkId,
+      page: 1,
+      limit: 10,
+      order: null,
+      asc: true,
+    });
+
+    if (response.code === 0) {
+      professors.value = response.data.list;
+    } else {
+      console.error("Failed to fetch professors:", response.message);
+    }
+  } catch (error) {
+    console.error("Error fetching professors:", error);
+  }
+}
 </script>
 
 <style>
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
 .banner {
   height: 100rpx;
   display: flex;
@@ -134,11 +198,24 @@ function back() {
   font-size: 32rpx;
 }
 
+.flex {
+  display: flex;
+  flex: 1;
+}
+
 .left {
-  height: 1500rpx;
+  height: 100%;
   width: 250rpx;
   font-size: 30rpx;
   background-color: #f2f2f2;
+}
+
+.right {
+  height: 100%;
+  width: calc(100% - 270rpx);
+  padding: 20rpx;
+  box-sizing: border-box;
+  background-color: #fff;
 }
 
 .tab-item {
@@ -181,5 +258,71 @@ function back() {
 
 .bc-green {
   background-color: #95c9b3;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20rpx;
+  color: #999;
+}
+
+.professor-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.professor-item {
+  width: 48%;
+  margin: 1%;
+  background-color: #fff;
+  border-radius: 10rpx;
+  overflow: hidden;
+}
+
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150rpx;
+}
+
+.avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.info {
+  padding: 20rpx;
+}
+
+.name {
+  font-size: 32rpx;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.brief {
+  font-size: 28rpx;
+  color: #999;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 10rpx;
+  line-clamp: 3;
+}
+
+.major-field {
+  font-size: 28rpx;
+  color: #32b880;
+  background-color: #e6f7ff;
+  padding: 10rpx;
+  border-radius: 10rpx;
+  margin-top: 10rpx;
 }
 </style>
