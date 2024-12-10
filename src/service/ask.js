@@ -16,3 +16,15 @@ export const getProfessorList = (data) => {
     data,
   });
 };
+
+/**
+ * 根据名称获取专家列表
+ * @param {string} name - 专家姓名
+ * @returns {Promise<Object>} - 包含专家列表的响应对象
+ */
+export const getProfessorListByName = (name) => {
+  return http({
+    method: "POST",
+    url: `/professor/search?name=${name}`,
+  });
+};

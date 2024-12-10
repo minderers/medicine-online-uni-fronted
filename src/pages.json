@@ -70,6 +70,14 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "反馈"
       }
+    },
+    {
+      "path": "pages/ask/askSearch",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "搜索"
+      }
     }
   ],
   "globalStyle": {

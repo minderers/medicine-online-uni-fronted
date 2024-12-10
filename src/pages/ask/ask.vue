@@ -3,11 +3,13 @@
     <view class="search">
       <view class="h-15"></view>
       <view class="flex justify-between align-center banner bg-white mx-2">
-        <view class="back" @click="back">
-          <image
-            src="../../static/nav/icon_sousuo.png"
-            style="height: 40rpx; width: 35rpx"
-          />
+        <view class="back">
+          <navigator url="/pages/ask/askSearch">
+            <image
+              src="../../static/nav/icon_sousuo.png"
+              style="height: 40rpx; width: 35rpx"
+            />
+          </navigator>
         </view>
         <view class="content">专家资讯</view>
         <view class="null"></view>
@@ -18,7 +20,7 @@
       <scroll-view
         scroll-y
         :style="'height:' + scrollH + 'px;'"
-        class="left bc-grey"
+        class="left bc-grey no-scroll-bar"
       >
         <view v-for="category in categories" :key="category.pkId">
           <view
@@ -45,14 +47,14 @@
       <scroll-view
         scroll-y
         :style="'height:' + scrollH + 'px;'"
-        class="right bc-white"
+        class="right bc-white no-scroll-bar"
       >
         <view v-if="professors.length === 0" class="no-data">暂无数据</view>
         <view class="professor-grid">
           <view
             v-for="professor in professors"
             :key="professor.pkId"
-            class="professor-item"
+            class="professor-item border-1 border-solid border-gray-300 rounded-lg"
           >
             <view class="avatar-container">
               <image :src="professor.avatar" class="avatar" />
@@ -151,11 +153,6 @@ function selectChild(category, child) {
   fetchProfessors(category, child);
 }
 
-function back() {
-  // 返回按钮的点击事件处理函数
-  console.log("Back button clicked");
-}
-
 async function fetchProfessors(category, child) {
   try {
     const response = await getProfessorList({
@@ -212,7 +209,7 @@ async function fetchProfessors(category, child) {
 
 .right {
   height: 100%;
-  width: calc(100% - 270rpx);
+  width: calc(100% - 260rpx);
   padding: 20rpx;
   box-sizing: border-box;
   background-color: #fff;
@@ -272,7 +269,7 @@ async function fetchProfessors(category, child) {
 }
 
 .professor-item {
-  width: 48%;
+  width: 47%;
   margin: 1%;
   background-color: #fff;
   border-radius: 10rpx;
@@ -300,9 +297,6 @@ async function fetchProfessors(category, child) {
 .name {
   font-size: 32rpx;
   font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .brief {
@@ -318,11 +312,22 @@ async function fetchProfessors(category, child) {
 }
 
 .major-field {
+  display: inline-flex;
   font-size: 28rpx;
   color: #32b880;
   background-color: #e6f7ff;
   padding: 10rpx;
   border-radius: 10rpx;
   margin-top: 10rpx;
+}
+
+/* 隐藏滚动条 */
+.no-scroll-bar ::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scroll-bar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 </style>
