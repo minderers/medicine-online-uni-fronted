@@ -3,14 +3,14 @@
     <view class="search">
       <view class="h-15"></view>
       <view class="flex justify-between align-center banner bg-white mx-2">
-        <view class="back">
-          <navigator url="/pages/ask/askSearch">
+        <navigator url="/pages/ask/askSearch">
+          <view class="back">
             <image
               src="../../static/nav/icon_sousuo.png"
               style="height: 40rpx; width: 35rpx"
             />
-          </navigator>
-        </view>
+          </view>
+        </navigator>
         <view class="content">专家资讯</view>
         <view class="null"></view>
       </view>
@@ -56,14 +56,16 @@
             :key="professor.pkId"
             class="professor-item border-1 border-solid border-gray-300 rounded-lg"
           >
-            <view class="avatar-container">
-              <image :src="professor.avatar" class="avatar" />
-            </view>
-            <view class="info">
-              <view class="name">{{ professor.name }}</view>
-              <view class="brief">{{ professor.brief }}</view>
-              <view class="major-field">{{ professor.majorField }}</view>
-            </view>
+            <navigator :url="'/pages/ask/askDetail?id=' + professor.pkId">
+              <view class="avatar-container">
+                <image :src="professor.avatar" class="avatar" />
+              </view>
+              <view class="info">
+                <view class="name">{{ professor.name }}</view>
+                <view class="brief">{{ professor.brief }}</view>
+                <view class="major-field">{{ professor.majorField }}</view>
+              </view>
+            </navigator>
           </view>
         </view>
       </scroll-view>
@@ -139,6 +141,12 @@ function toggleCategory(category) {
     // 打开当前类别
     category.isOpen = true;
     category.isSelected = true;
+
+    // 选中当前类别的第一个子节点
+    if (category.childCategory.length > 0) {
+      category.childCategory[0].isSelected = true;
+      fetchProfessors(category, category.childCategory[0]);
+    }
   }
 }
 
@@ -297,6 +305,8 @@ async function fetchProfessors(category, child) {
 .name {
   font-size: 32rpx;
   font-weight: bold;
+  display: flex;
+  justify-content: center;
 }
 
 .brief {

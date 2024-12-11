@@ -136,6 +136,8 @@ function clearSearch() {
 .name {
   font-size: 32rpx;
   font-weight: bold;
+  display: flex;
+  justify-content: center;
 }
 
 .brief {

@@ -78,6 +78,14 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "搜索"
       }
+    },
+    {
+      "path": "pages/ask/askDetail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "专家详情"
+      }
     }
   ],
   "globalStyle": {
