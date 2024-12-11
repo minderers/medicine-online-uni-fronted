@@ -21,3 +21,24 @@ export const getCourseDetail = (id) => {
     url: `/courseDetail/${id}`, // 修改URL以反映获取课程详情的意图
   });
 };
+
+export const getBookList = (categoryName) => {
+  return http({
+    method: "POST",
+    url: `/resource/book/list?categoryName=${categoryName}`,
+  });
+};
+
+export const getVideoList = (categoryId) => {
+  return http({
+    method: "POST",
+    url: `/resource/video/list?categoryId=${categoryId}`,
+  });
+};
+
+export const getPodcastList = (categoryId) => {
+  return http({
+    method: "POST",
+    url: `/resource/podcast/list?categoryId=${categoryId}`,
+  });
+};
