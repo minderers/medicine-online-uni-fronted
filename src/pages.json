@@ -77,6 +77,27 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "资讯详情"
       }
+    },
+    {
+      "path": "pages/index/bookList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "专题书籍列表"
+      }
+    },
+    {
+      "path": "pages/index/podcastList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "专题音频列表"
+      }
+    },
+    {
+      "path": "pages/index/videoList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "专题视频列表"
+      }
     }
   ],
   "globalStyle": {

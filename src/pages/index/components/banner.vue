@@ -8,7 +8,7 @@
   >
     <swiper-item
       class="banner"
-      @click="navigatorToMsg"
+      @click="navigatorToMsg(item)"
       v-for="(item, index) in bannerList"
       :key="index"
     >
@@ -45,10 +45,10 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
-import { getSubjectList } from "@/service/subject";
+import { getPublicSubjectList } from "@/service/subject";
 const bannerList = ref([]);
 const getBannerList = async () => {
-  const res = await getSubjectList();
+  const res = await getPublicSubjectList();
   if (res.code === 0 && res.data) {
     bannerList.value = res.data;
   }
@@ -56,9 +56,13 @@ const getBannerList = async () => {
 onMounted(() => {
   getBannerList();
 });
-const navigatorToMsg = () => {
+const navigatorToMsg = (item) => {
   uni.navigateTo({
-    url: "/pages/index/banner-msg",
+    url: `/pages/index/banner-msg?pkId=${encodeURIComponent(
+      item.pkId
+    )}&cover=${encodeURIComponent(item.cover)}&brief=${encodeURIComponent(
+      item.brief
+    )}&claim=${encodeURIComponent(item.claim)}`,
   });
 };
 const getRandomColor = (index) => {
