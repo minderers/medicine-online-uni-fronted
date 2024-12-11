@@ -77,11 +77,12 @@
                     child.children.length > 0
                   "
                 >
-                  <view>
-                    <Video
-                      v-for="(video, index) in videoList"
-                      class="video-container"
-                    >
+                  <view
+                    v-for="(video, index) in videoList"
+                    class="video-container"
+                    @click="toDetail(video)"
+                  >
+                    <Video>
                       <image slot="cover" :src="video.cover" class="video" />
                       <view slot="title">{{ video.title }}</view>
                       <view slot="label">{{ video.label }}</view>
@@ -240,7 +241,6 @@ const fetchBookList = async () => {
   try {
     const response = await getBookList(categoryName.value); // 使用 categoryName.value
     bookList.value = response.data || [];
-    console.log("书籍列表", bookList.value);
   } catch (error) {
     console.error("获取书籍列表失败", error);
   }
@@ -252,7 +252,6 @@ const fetchVideoList = async () => {
   try {
     const response = await getVideoList(videoCategoryId.value);
     videoList.value = response.data || [];
-    console.log("视频列表", videoList.value);
   } catch (error) {
     console.error("获取视频列表失败", error);
   }
@@ -264,7 +263,6 @@ const fetchPodcastList = async () => {
   try {
     const response = await getPodcastList(podcastCategoryId.value);
     podcastList.value = response.data || [];
-    console.log("音频列表", podcastList.value);
   } catch (error) {
     console.error("获取音频列表失败", error);
   }
@@ -279,6 +277,20 @@ const getRandomColor = (index) => {
     borderWidth: "1px",
     borderStyle: "solid",
   };
+};
+
+const toDetail = (item) => {
+  console.log("被点击了", item.pkId);
+  const query = `title=${encodeURIComponent(
+    item.title
+  )}&browseNum=${encodeURIComponent(
+    item.browseNum
+  )}&starNum=${encodeURIComponent(item.starNum)}&pkId=${encodeURIComponent(
+    item.pkId
+  )}`;
+  uni.navigateTo({
+    url: `/pages/index/ResourceDetail?${query}`,
+  });
 };
 
 onMounted(() => {
