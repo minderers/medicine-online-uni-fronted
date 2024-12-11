@@ -28,3 +28,15 @@ export const getProfessorListByName = (name) => {
     url: `/professor/search?name=${name}`,
   });
 };
+
+/**
+ * 获取专家详情
+ * @param id
+ * @returns
+ */
+export const getProfessorById = (id) => {
+  return http({
+    method: "POST",
+    url: "/professor/detail/" + id,
+  });
+};
