@@ -11,3 +11,15 @@ export const getNewsList = (data) => {
     data,
   });
 };
+
+/**
+ * 获取资讯详情
+ * @returns
+ */
+
+export const getNewsDetail = (id) => {
+  return http({
+    method: "GET",
+    url: `/newsListDetail/${id}`,
+  });
+};

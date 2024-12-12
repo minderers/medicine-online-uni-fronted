@@ -77,6 +77,72 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "搜索"
       }
+    },
+    {
+      "path": "pages/ask/askSearch",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "搜索"
+      }
+    },
+    {
+      "path": "pages/ask/askDetail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "专家详情"
+      }
+    },
+    {
+      "path": "pages/ask/askProfessor",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "咨询专家"
+      }
+    },
+    {
+      "path": "pages/ask/askList",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "问题列表"
+        }
+      }，
+      "path": "pages/index/NewsDetail",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "资讯详情"
+      }
+    },
+    {
+      "path": "pages/index/bookList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "专题书籍列表"
+      }
+    },
+    {
+      "path": "pages/index/podcastList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "专题音频列表"
+      }
+    },
+    {
+      "path": "pages/index/videoList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "专题视频列表"
+      }
+    },
+    {
+      "path": "pages/index/videoDetail",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "专题视频集列表"
+      }
     }
   ],
   "globalStyle": {
