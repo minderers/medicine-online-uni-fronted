@@ -1,5 +1,5 @@
 <template>
-  <div class="mask w-30 h-20">
+  <div class="mask">
     <div class="flex justify-center align-center">
       <image
         src="../../../static/index/audio_pause.png"
