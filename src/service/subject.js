@@ -35,3 +35,11 @@ export const getSubjectVideoCollection = (id) => {
     url: `/index/videosList?subjectId=${id}`,
   });
 };
+
+export const getSubjectVideoDetail = (id, data) => {
+  return http({
+    method: "post",
+    url: `/item/videos/` + id,
+    data,
+  });
+};

@@ -18,7 +18,7 @@
           :key="item.pkId"
           class="itemList mx-2"
         >
-          <div class="w-40">
+          <div class="w-40" @click="toDetail(item)">
             <div class="">
               <image :src="item.cover" mode="scaleToFill" class="h-50 w-40" />
             </div>
@@ -45,7 +45,7 @@
         </div>
       </scroll-view>
     </div>
-    <div class="bottom my-4 mx-2">
+    <div class="bottom my-4">
       <div
         class="type flex justify-items-start align-center mx-3 my-2 border-bottom"
       >
@@ -59,14 +59,16 @@
         <div class="ml-2 title">视频</div>
       </div>
       <!-- 多级菜单视频列表 -->
+      <KnowledgeBase />
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import Back from "@/components/back.vue";
 import { getSubjectVideoCollection } from "@/service/subject";
+import KnowledgeBase from "./components/knowledgeBase.vue";
 const props = defineProps({
   pkId: Number,
 });
@@ -87,6 +89,11 @@ const getRandomColor = (index) => {
 onMounted(() => {
   getTopVideo();
 });
+const toDetail = (item) => {
+  uni.navigateTo({
+    url: `/pages/index/videoDetail?pkId=${encodeURIComponent(item.pkId)}`,
+  });
+};
 </script>
 
 <style lang="scss" scoped>

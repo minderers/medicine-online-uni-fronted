@@ -23,7 +23,11 @@ const content = ref([]);
 const getDetail = async () => {
   const res = await getNewsDetail(props.pkId);
   console.log(res);
-  HTMLcontent.value = res.data.content;
+  const contentWithHandledSpaces = res.data.content.replace(
+    /　/g,
+    '<span data-text="　"></span>'
+  );
+  HTMLcontent.value = contentWithHandledSpaces;
   // // 将 HTML 字符串转换为 rich-text 组件可以接受的格式
   // content.value = convertHtmlToNodes(HTMLcontent.value);
 };
