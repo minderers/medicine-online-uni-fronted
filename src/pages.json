@@ -86,6 +86,22 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "专家详情"
       }
+    },
+    {
+      "path": "pages/ask/askProfessor",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "咨询专家"
+      }
+    },
+    {
+      "path": "pages/ask/askList",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "问题列表"
+      }
     }
   ],
   "globalStyle": {

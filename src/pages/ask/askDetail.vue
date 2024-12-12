@@ -1,7 +1,7 @@
 <template>
   <Back>专家详情</Back>
 
-  <view class="professor-detail">
+  <view class="professor-detail pb-20">
     <view class="professor-info">
       <image
         :src="professor?.avatar"
@@ -56,11 +56,13 @@
             </view>
           </view>
           <view class="flex items-center">
-            <text>更多</text>
-            <image
-              class="w-3 h-3"
-              src="../../static/expertBank/xiayiye.png"
-            /> </view
+            <navigator :url="'/pages/ask/askList?id=' + professor?.pkId">
+              <text>更多</text>
+              <image
+                class="w-3 h-3"
+                src="../../static/expertBank/xiayiye.png"
+              />
+            </navigator> </view
         ></view>
         <view v-if="professor?.list && professor.list.length > 0">
           <view
@@ -86,6 +88,11 @@
         </view>
       </view>
     </view>
+  </view>
+  <view class="fixed-button">
+    <navigator :url="'/pages/ask/askProfessor?id=' + professor?.pkId">
+      <button class="w-50 bg-green-600 text-white">咨询专家</button>
+    </navigator>
   </view>
 </template>
 
@@ -193,5 +200,12 @@ onLoad(() => getProfessorInfo());
 .no-data {
   color: #999;
   margin-top: 10px;
+}
+
+.fixed-button {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>

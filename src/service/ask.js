@@ -40,3 +40,15 @@ export const getProfessorById = (id) => {
     url: "/professor/detail/" + id,
   });
 };
+
+/**
+ * 获取专家问题列表
+ * @param id
+ * @returns
+ */
+export const getTopicListById = (id) => {
+  return http({
+    method: "POST",
+    url: "/professor/topicList/" + id,
+  });
+};
