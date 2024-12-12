@@ -6,7 +6,7 @@
 
 <script setup>
 import Navbar from "@/components/navbar.vue";
-import ref from "vue";
+import { ref } from "vue";
 const back = () => {
   uni.navigateBack();
 };

@@ -70,6 +70,13 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "反馈"
       }
+    },
+    {
+      "path": "pages/search/search",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "搜索"
+      }
     }
   ],
   "globalStyle": {
