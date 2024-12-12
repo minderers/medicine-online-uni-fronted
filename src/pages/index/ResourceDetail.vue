@@ -64,12 +64,14 @@
       <!-- 目录 -->
       <swiper-item>
         <scroll-view scroll-y="true">
-          <div class="m-4" v-for="(item, index) in list" :key="index">
+          <div class="m-4">
             <div class="item flex justify-between my-2">
               <div class="text-xl">
-                {{ item.title }}
+                {{ contentList.title }}
               </div>
-              <div class="second text-gray-400 text-sm">{{ item.second }}</div>
+              <div class="second text-gray-400 text-sm">
+                {{ contentList.second }}
+              </div>
             </div>
           </div>
         </scroll-view>
@@ -86,7 +88,7 @@ const navIndex = ref(0);
 const isletIndex = ref(0);
 const tabBars = ref([{ name: "简介" }, { name: "目录" }]);
 // 点击切换选项卡
-const changeTab = (index) => {
+const changeTab = async (index) => {
   navIndex.value = index;
 };
 const checkIndex = (index) => {
@@ -96,10 +98,7 @@ const checkIndex = (index) => {
 const onChangeTab = (e) => {
   navIndex.value = e.detail.current;
 };
-const list = ref([
-  { title: "第一章", second: "0'00'8" },
-  { title: "第二章", second: "0'00'50" },
-]);
+const contentList = ref([]);
 const props = defineProps({
   title: String,
   browseNum: Number,
@@ -107,11 +106,12 @@ const props = defineProps({
   pkId: Number,
 });
 const src = ref();
-const second = ref("");
 const getVideo = async () => {
   const res = await getCourseDetail(props.pkId);
-  src.value = res.data.url;
-  second.value = res.data.second;
+  if (res.code === 0 && res.data) {
+    src.value = res.data.url;
+    contentList.value = res.data;
+  }
 };
 onMounted(() => {
   getVideo();

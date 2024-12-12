@@ -1,9 +1,9 @@
 <template>
   <div>
     <Back>
-      <slot>详情</slot>
+      <slot>意见反馈</slot>
     </Back>
-    <div class="body m-2">
+    <div class="form m-2">
       <div class="advice">
         您的问题或建议：
         <input
@@ -16,7 +16,9 @@
         问题类型：
         <view class="container my-2">
           <!-- 触发弹出层的按钮 -->
-          <div @click="showPopup = true" class="input2">{{ questionType }}</div>
+          <div @click="showPopup = true" class="input2 px-2">
+            {{ questionType }}
+          </div>
 
           <!-- 遮罩层 -->
           <view v-if="showPopup" class="mask" @click="closePopup"></view>
@@ -39,14 +41,29 @@
         </view>
       </div>
       <div class="">问题图片：</div>
+      <div class="m-3">
+        <image
+          src="../../static/index/take.png"
+          mode="scaleToFill"
+          class="h-30 w-30"
+        />
+      </div>
+      <div class="">您的联系方式：</div>
+      <div class="">
+        <input
+          type="text"
+          class="input2 my-2 px-2"
+          placeholder="请输入手机号"
+        />
+      </div>
     </div>
+    <button class="text-white rounded-lg my-10 bg-green-500 w-50">提交</button>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import Back from "@/components/back.vue";
-
 const questionType = ref("请选择问题类型");
 const showPopup = ref(false);
 const list = ref([
@@ -106,6 +123,6 @@ const closePopup = () => {
 .input2 {
   border: 1px solid gray;
   padding-top: 10px;
-  padding-bottom: 20px;
+  padding-bottom: 10px;
 }
 </style>
