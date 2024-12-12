@@ -72,6 +72,13 @@
       }
     },
     {
+      "path": "pages/search/search",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "搜索"
+      }
+    },
+    {
       "path": "pages/ask/askSearch",
       "style": {
         "navigationStyle": "custom",

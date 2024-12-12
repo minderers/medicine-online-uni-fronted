@@ -198,6 +198,7 @@
 </template>
 
 <script setup>
+import Navbar from "@/components/navbar.vue";
 import Back from "@/components/back.vue";
 import { onMounted, ref } from "vue";
 import {

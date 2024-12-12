@@ -8,6 +8,7 @@ export function createApp() {
   // 关键代码
   store.use(createUnistorage());
   app.use(store);
+  app.mount("#app");
   return {
     app,
     Pinia, // 此处必须将 Pinia 返回

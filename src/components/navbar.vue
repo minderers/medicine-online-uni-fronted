@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import ref from "vue";
+import { ref } from "vue";
 const navigatorToSearch = () => {
   uni.navigateTo({
     url: "/pages/search/search",
