@@ -35,16 +35,22 @@
 
               <view v-if="child.selected && child.type == 0" class="box">
                 <view class="book-list">
-                  <Book
+                  <view
                     v-for="(book, index) in bookList"
                     :key="index"
-                    class="book-container"
+                    @click="toBook(book)"
                   >
-                    <image slot="cover" :src="book.cover" class="book-image" />
+                    <Book class="book-container">
+                      <image
+                        slot="cover"
+                        :src="book.cover"
+                        class="book-image"
+                      />
 
-                    <view slot="title">{{ book.title }}</view>
-                    <view slot="browseNum">{{ book.browseNum }}</view>
-                  </Book>
+                      <view slot="title">{{ book.title }}</view>
+                      <view slot="browseNum">{{ book.browseNum }}</view>
+                    </Book>
+                  </view>
                 </view>
               </view>
               <!-- 展开时显示子节点的子级 -->
@@ -99,19 +105,21 @@
                   v-for="(podcast, index) in podcastList"
                   :key="podcast.pkId"
                 >
-                  <Video v-if="podcast.cover" class="video-container">
-                    <image slot="cover" :src="podcast.cover" class="video" />
-                    <view slot="title">{{ podcast.title }}</view>
-                    <view slot="label">{{ podcast.label }}</view>
-                  </Video>
-                  <view class="podcast" v-else>
-                    <view>{{ podcast.title }}</view>
-                    <view class="label">
-                      <span
-                        class="label-text"
-                        :style="getRandomColor(podcast.pkId)"
-                        >{{ podcast.label }}</span
-                      >
+                  <view @click="toPodcast(podcast)">
+                    <Video v-if="podcast.cover" class="video-container">
+                      <image slot="cover" :src="podcast.cover" class="video" />
+                      <view slot="title">{{ podcast.title }}</view>
+                      <view slot="label">{{ podcast.label }}</view>
+                    </Video>
+                    <view class="podcast" v-else>
+                      <view>{{ podcast.title }}</view>
+                      <view class="label">
+                        <span
+                          class="label-text"
+                          :style="getRandomColor(podcast.pkId)"
+                          >{{ podcast.label }}</span
+                        >
+                      </view>
                     </view>
                   </view>
                 </view>
@@ -280,7 +288,6 @@ const getRandomColor = (index) => {
 };
 
 const toDetail = (item) => {
-  console.log("被点击了", item.pkId);
   const query = `title=${encodeURIComponent(
     item.title
   )}&browseNum=${encodeURIComponent(
@@ -290,6 +297,28 @@ const toDetail = (item) => {
   )}`;
   uni.navigateTo({
     url: `/pages/index/ResourceDetail?${query}`,
+  });
+};
+
+const toBook = (item) => {
+  const query = `title=${encodeURIComponent(
+    item.title
+  )}&url=${encodeURIComponent(item.url)}`;
+  uni.navigateTo({
+    url: `/pages/index/bookDetail?${query}`,
+  });
+};
+
+const toPodcast = (item) => {
+  const query = `title=${encodeURIComponent(
+    item.title
+  )}&browseNum=${encodeURIComponent(
+    item.browseNum
+  )}&starNum=${encodeURIComponent(item.starNum)}&pkId=${encodeURIComponent(
+    item.pkId
+  )}`;
+  uni.navigateTo({
+    url: `/pages/index/podcastDetail?${query}`,
   });
 };
 

@@ -42,3 +42,10 @@ export const getPodcastList = (categoryId) => {
     url: `/resource/podcast/list?categoryId=${categoryId}`,
   });
 };
+
+export const getPodcastDetail = (id) => {
+  return http({
+    method: "post",
+    url: `/resource/podcast/detail/${id}`, // 修改URL以反映获取课程详情的意图
+  });
+};
