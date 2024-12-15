@@ -6,6 +6,7 @@
     <Podcast
       :currentAudioUrl="currentAudioUrl"
       :currentAudioDuration="currentAudioDuration"
+      :cover="newCover"
       playIcon="../../../static/index/audio_pause.png"
       pauseIcon="../../../static/index/audio_play.png"
     />
@@ -55,16 +56,17 @@
     <!-- 目录部分 -->
     <view v-show="navIndex === 1">
       <scroll-view scroll-y="true">
-        <div class="m-4">
+        <div>
           <div
-            class="item flex justify-between my-2"
+            class="item flex justify-between p-2"
             v-for="(audioItem, index) in contentList"
             :key="audioItem.pkId"
             @click="changeAudio(index)"
+            :class="{ grey: selectedIndex === index }"
           >
             <div class="font">{{ audioItem.title }}</div>
             <div class="second text-gray-400 text-sm">
-              {{ audioItem.length }}秒
+              {{ formatTime(audioItem.length) }}
             </div>
           </div>
         </div>
@@ -84,6 +86,7 @@ const tabBars = ref([{ name: "简介" }, { name: "目录" }]);
 // 当前播放音频的 URL
 const currentAudioUrl = ref("");
 const currentAudioDuration = ref(0);
+const newCover = ref("");
 // 点击切换选项卡
 const changeTab = async (index) => {
   navIndex.value = index;
@@ -96,6 +99,7 @@ const props = defineProps({
   browseNum: Number,
   starNum: Number,
   pkId: Number,
+  cover: String,
 });
 
 // 获取音频的详细信息
@@ -106,6 +110,7 @@ const getAudio = async () => {
     // 默认设置第一个音频的 URL 作为当前播放的音频
     currentAudioUrl.value = res.data[0].url;
     currentAudioDuration.value = res.data[0].length;
+    newCover.value = props.cover;
   }
 };
 
@@ -113,10 +118,27 @@ onMounted(() => {
   getAudio();
 });
 
+const selectedIndex = ref(0);
 // 切换音频并自动播放
 const changeAudio = (index) => {
   currentAudioUrl.value = contentList.value[index].url;
   currentAudioDuration.value = contentList.value[index].length;
+  selectedIndex.value = index;
+};
+
+// 格式化时间为 mm:ss 格式
+// 格式化时间为 hh:mm:ss 格式
+const formatTime = (time) => {
+  const hours = Math.floor(time / 3600) // 计算小时
+    .toString()
+    .padStart(2, "0");
+  const minutes = Math.floor((time % 3600) / 60) // 剩余时间计算分钟
+    .toString()
+    .padStart(2, "0");
+  const seconds = Math.floor(time % 60) // 剩余时间计算秒数
+    .toString()
+    .padStart(2, "0");
+  return `${hours}:${minutes}:${seconds}`;
 };
 </script>
 
@@ -154,5 +176,9 @@ const changeAudio = (index) => {
 
 .font {
   font-size: rpx;
+}
+
+.grey {
+  background-color: #f2f2f2; /* 灰色背景 */
 }
 </style>

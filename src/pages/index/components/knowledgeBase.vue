@@ -316,7 +316,7 @@ const toPodcast = (item) => {
     item.browseNum
   )}&starNum=${encodeURIComponent(item.starNum)}&pkId=${encodeURIComponent(
     item.pkId
-  )}`;
+  )}&cover=${encodeURIComponent(item.cover)}`;
   uni.navigateTo({
     url: `/pages/index/podcastDetail?${query}`,
   });
