@@ -60,6 +60,7 @@
     "@unocss/reset": "^0.64.1",
     "pinia": "^2.2.6",
     "pinia-plugin-unistorage": "^0.1.2",
+    "uni-ui": "^1.0.0",
     "vue": "3.5.11",
     "vue-i18n": "9.6.2"
   },
