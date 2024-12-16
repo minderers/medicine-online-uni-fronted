@@ -72,6 +72,20 @@
       }
     },
     {
+      "path": "pages/index/bookDetail",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "图书详情"
+      }
+    },
+    {
+      "path": "pages/index/podcastDetail",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "音频详情"
+        }
+      },
+    {
       "path": "pages/search/search",
       "style": {
         "navigationBarTextStyle": "white",
