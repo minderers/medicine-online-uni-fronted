@@ -32,6 +32,8 @@
         <NewResource v-if="index === 0" />
         <News v-if="index === 1" />
 
+        <knowledgeBase v-if="index === 3" />
+
         <Study v-if="index === 2" />
       </scroll-view>
     </swiper-item>
