@@ -126,7 +126,6 @@ const changeAudio = (index) => {
   selectedIndex.value = index;
 };
 
-// 格式化时间为 mm:ss 格式
 // 格式化时间为 hh:mm:ss 格式
 const formatTime = (time) => {
   const hours = Math.floor(time / 3600) // 计算小时

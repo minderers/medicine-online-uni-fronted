@@ -303,7 +303,11 @@ const toDetail = (item) => {
 const toBook = (item) => {
   const query = `title=${encodeURIComponent(
     item.title
-  )}&url=${encodeURIComponent(item.url)}`;
+  )}&url=${encodeURIComponent(item.url)}&bookId=${encodeURIComponent(
+    item.pkId
+  )}&cover=${encodeURIComponent(item.cover)}&totalPage=${encodeURIComponent(
+    item.totalPage
+  )}`;
   uni.navigateTo({
     url: `/pages/index/bookDetail?${query}`,
   });
