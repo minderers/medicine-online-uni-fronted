@@ -1,39 +1,77 @@
 <template>
-  <div class="banner" @click="navigatorToMsg">
-    <image src="../../../static/index/banner.png" alt="" class="banner-img" />
-    <div class="mx-2" style="font-size: 35rpx">
-      基层卫生技术人员中医药知识与技能培训
-    </div>
-    <div class="bottom m-2">
-      <div class="tag">中医培训</div>
-      <div class="icon">
-        <div class="left">
-          <image
-            src="../../../static/index/icon_chakan.png"
-            mode="scaleToFill"
-          />
-          <div class="text-gray-400 ml-2">{{ viewCount }}</div>
+  <swiper
+    indicator-dots="true"
+    circular="true"
+    indicator-active-color="#32b880"
+    autoplay="true"
+    class="h-55"
+  >
+    <swiper-item
+      class="banner"
+      @click="navigatorToMsg(item)"
+      v-for="(item, index) in bannerList"
+      :key="index"
+    >
+      <div class="item mx-2">
+        <image :src="item.cover" alt="" class="banner-img" />
+        <div class="mx-2" style="font-size: 35rpx">
+          {{ item.title }}
         </div>
-        <div class="right">
-          <image
-            src="../../../static/index/icon_shoucang.png"
-            mode="scaleToFill"
-          />
-          <div class="text-gray-400 mx-2">1</div>
+        <div class="bottom m-2">
+          <div class="tag" :style="getRandomColor(item.pkId)">
+            {{ item.label }}
+          </div>
+          <div class="icon">
+            <div class="left">
+              <image
+                src="../../../static/index/icon_chakan.png"
+                mode="scaleToFill"
+              />
+              <div class="text-gray-400 ml-2">{{ item.browseNum }}</div>
+            </div>
+            <div class="right">
+              <image
+                src="../../../static/index/icon_shoucang.png"
+                mode="scaleToFill"
+              />
+              <div class="text-gray-400 mx-2">{{ item.starNum }}</div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </swiper-item>
+  </swiper>
 </template>
 
 <script setup>
-import { ref } from "vue";
-const viewCount = ref(908763);
-const navigatorToMsg = () => {
-  viewCount.value++;
+import { onMounted, ref } from "vue";
+import { getPublicSubjectList } from "@/service/subject";
+const bannerList = ref([]);
+const getBannerList = async () => {
+  const res = await getPublicSubjectList();
+  if (res.code === 0 && res.data) {
+    bannerList.value = res.data;
+  }
+};
+onMounted(() => {
+  getBannerList();
+});
+const navigatorToMsg = (item) => {
   uni.navigateTo({
-    url: "/pages/index/banner-msg",
+    url: `/pages/index/banner-msg?pkId=${encodeURIComponent(
+      item.pkId
+    )}&cover=${encodeURIComponent(item.cover)}&brief=${encodeURIComponent(
+      item.brief
+    )}&claim=${encodeURIComponent(item.claim)}`,
   });
+};
+const getRandomColor = (index) => {
+  const colors = ["red", "blue", "green", "orange", "purple"];
+  const color = colors[index % colors.length]; // 使用索引来确保每个标签颜色不同
+  return {
+    borderColor: color,
+    color: color, // 文字颜色和边框颜色相同
+  };
 };
 </script>
 
@@ -41,7 +79,7 @@ const navigatorToMsg = () => {
 .banner {
   background: #fff;
   border-radius: 10px;
-  margin: 10px;
+  width: 100%;
   box-sizing: border-box;
   box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.15);
   .banner-img {
