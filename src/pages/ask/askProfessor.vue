@@ -28,25 +28,42 @@
     </view>
 
     <view class="flex items-center">
-      <view class="mr-2">
+      <button @click="uploadImage" class="mr-2 upload-button">
         <image class="w-10 h-8" src="../../static/expertBank/icon_image.png" />
-      </view>
-      <view>
+      </button>
+      <button @click="uploadVideo" class="upload-button">
         <image class="w-12 h-7" src="../../static/expertBank/icon_video.png" />
-      </view>
+      </button>
       <view>
         <text class="text-gray-300">（最多上传九张图或一条视频）</text>
       </view>
     </view>
 
-    <button class="w-50 bg-green-600 text-white mt-4">提交</button>
+    <view class="mt-4 flex flex-wrap">
+      <view
+        v-for="(image, index) in images"
+        :key="index"
+        class="relative mr-2 mb-2"
+      >
+        <image :src="image" class="uploaded-image" />
+        <button @click="removeImage(index)" class="delete-button">X</button>
+      </view>
+      <view v-if="video" class="relative mr-2 mb-2">
+        <video :src="video" class="uploaded-video" controls></video>
+        <button @click="removeVideo" class="delete-button">X</button>
+      </view>
+    </view>
+
+    <button class="w-50 bg-green-600 text-white mt-4" @click="submitQuestion">
+      提交
+    </button>
   </view>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import Back from "@/components/back.vue";
-import { getProfessorById } from "@/service/ask";
+import { getProfessorById, addTopic } from "@/service/ask";
 import { onLoad } from "@dcloudio/uni-app";
 
 const props = defineProps({
@@ -66,9 +83,90 @@ const getProfessorInfo = async () => {
 const professor = ref(null);
 const isExpanded = ref(true);
 const questionText = ref("");
+const images = ref([]);
+const video = ref(null);
 
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value;
+};
+
+const uploadImage = () => {
+  uni.chooseImage({
+    count: 9 - images.value.length, // 最多可以选择的图片张数
+    sizeType: ["original", "compressed"],
+    sourceType: ["album", "camera"],
+    success: (res) => {
+      images.value.push(...res.tempFilePaths);
+      console.log(images.value);
+    },
+    fail: (err) => {
+      console.error("Failed to choose image", err);
+    },
+  });
+};
+
+const uploadVideo = () => {
+  if (video.value) {
+    uni.showToast({
+      title: "只能上传一个视频",
+      icon: "none",
+    });
+    return;
+  }
+  uni.chooseVideo({
+    sourceType: ["album", "camera"],
+    maxDuration: 60,
+    camera: "back",
+    compressed: true,
+    success: (res) => {
+      video.value = res.tempFilePath;
+      console.log(video.value);
+    },
+    fail: (err) => {
+      console.error("Failed to choose video", err);
+    },
+  });
+};
+
+const removeImage = (index) => {
+  images.value.splice(index, 1);
+};
+
+const removeVideo = () => {
+  video.value = null;
+};
+
+const submitQuestion = async () => {
+  try {
+    const response = await addTopic(
+      props.id,
+      questionText.value,
+      [...images.value, video.value].filter(Boolean)
+    );
+    if (response.code === 0) {
+      console.log("Question submitted successfully");
+      // 清空表单
+      questionText.value = "";
+      images.value = [];
+      video.value = null;
+      uni.showToast({
+        title: "提交成功",
+        icon: "success",
+      });
+    } else {
+      console.error("Failed to submit question", response.message);
+      uni.showToast({
+        title: "提交失败",
+        icon: "none",
+      });
+    }
+  } catch (error) {
+    console.error("Error submitting question", error);
+    uni.showToast({
+      title: "提交出错",
+      icon: "none",
+    });
+  }
 };
 
 onLoad(() => getProfessorInfo());
@@ -105,9 +203,35 @@ onLoad(() => getProfessorInfo());
   line-clamp: unset;
 }
 
-.file-input {
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.upload-button {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  outline: none;
+}
+
+.uploaded-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  position: relative;
+}
+
+.uploaded-video {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  position: relative;
+}
+
+.delete-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 2px 4px;
+  cursor: pointer;
 }
 </style>

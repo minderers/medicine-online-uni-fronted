@@ -102,6 +102,14 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "问题列表"
       }
+    },
+    {
+      "path": "pages/ask/replyList",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "回复列表"
+      }
     }
   ],
   "globalStyle": {
