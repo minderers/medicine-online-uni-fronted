@@ -5,7 +5,7 @@
 
   <view v-if="props.url" class="content-wrapper">
     <view>
-      <swiper class="swiper-container" :circular="true" :current="currentSlide">
+      <swiper class="swiper-container" :current="currentSlide">
         <swiper-item v-for="(image, index) in imageList" :key="index">
           <image :src="image" class="book-image" />
         </swiper-item>
@@ -31,14 +31,24 @@
               @click="goToPage(item.startPage, index)"
               :class="{ active: activeIndex === index }"
             >
-              <view class="chapter">{{ item.title }}</view>
+              <view class="chapter">
+                <view class="title">
+                  <image src="../../static/index/chapter.png" />
+                  <view>{{ item.title }}</view></view
+                ></view
+              >
               <view class="page">{{ item.startPage }}</view>
             </view>
           </scroll-view>
         </view>
       </view>
     </view>
-    <view class="bottom" @click="menu()">目录</view>
+    <view class="bottom" @click="menu()">
+      <view class="bottom-item">
+        <image src="../../static/index/contents.png" />
+        <view>目录</view>
+      </view>
+    </view>
   </view>
 
   <view v-else> 暂无书籍资源 </view>
@@ -123,12 +133,22 @@ onMounted(() => {
   color: #fff;
   width: 100%;
   height: 110rpx;
-  text-align: center;
-  line-height: 110rpx;
   position: relative;
   z-index: 1;
 }
 
+.bottom-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.bottom-item image {
+  margin-top: 10rpx;
+  width: 35rpx;
+  height: 35rpx;
+}
 .menu {
   background-color: #fff;
   width: 80%;
@@ -167,5 +187,17 @@ onMounted(() => {
 
 .active {
   background-color: #f2f2f2;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+}
+
+.title image {
+  margin-top: 5rpx;
+  margin-right: 10rpx;
+  width: 40rpx;
+  height: 40rpx;
 }
 </style>
