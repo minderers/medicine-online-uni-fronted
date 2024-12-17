@@ -1,7 +1,8 @@
 <template>
   <view class="no-data">
-    <image class="img" src="/static/noData.png" mode="aspectFit" />
-    <text class="txt">暂时没有数据</text>
+
+    <image class="img" src="/static/images/noData.png" mode="aspectFit" />
+    <text class="txt">还没有内容</text>
   </view>
 </template>
 <script setup></script>
@@ -15,7 +16,8 @@
   .img {
     width: 300rpx;
     height: 300rpx;
-    image {
+    .image {
+
       width: 100%;
       height: 100%;
     }

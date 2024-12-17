@@ -3,7 +3,7 @@
     <Back><slot>书籍列表</slot></Back>
     <div class="flex justify-between align-center mx-5 flex-wrap">
       <div v-for="item in bookList" :key="item.pkId">
-        <div class="item my-2">
+        <div class="item my-2" @click="toBook(item)">
           <image :src="item.cover" mode="scaleToFill" class="h-50 w-40" />
           <view class="mask flex justify-end align-center h-5">
             <div class="left">
@@ -34,6 +34,20 @@ const getBookList = async () => {
   const res = await getSubjectBook(props.pkId);
   bookList.value = res.data;
 };
+
+const toBook = (item) => {
+  const query = `title=${encodeURIComponent(
+    item.title
+  )}&url=${encodeURIComponent(item.url)}&bookId=${encodeURIComponent(
+    item.pkId
+  )}&cover=${encodeURIComponent(item.cover)}&totalPage=${encodeURIComponent(
+    item.totalPage
+  )}`;
+  uni.navigateTo({
+    url: `/pages/index/bookDetail?${query}`,
+  });
+};
+
 onMounted(() => {
   getBookList();
 });

@@ -64,7 +64,7 @@
     </div>
     <div class="flex justify-between align-center mx-3">
       <div v-for="item in bookList" :key="item.pkId">
-        <div class="item2">
+        <div class="item2" @click="toBook(item)">
           <image :src="item.cover" mode="scaleToFill" class="h-25 w-20" />
           <view class="mask h-5 flex justify-end align-center">
             <div class="left">
@@ -105,7 +105,10 @@
     </div>
     <div class="videoList mx-3">
       <div class="" v-for="item in videoList" :key="item.pkId">
-        <div class="item mx-2 my-4 border-bottom py-2 flex">
+        <div
+          class="item mx-2 my-4 border-bottom py-2 flex"
+          @click="toVideo(item)"
+        >
           <div class="item2">
             <image :src="item.cover" mode="scaleToFill" class="w-30 h-20" />
             <WholeMask />
@@ -167,7 +170,10 @@
     </div>
     <div class="podcastList mx-3">
       <div v-for="item in podcastList.slice(0, 3)" :key="item.pkId">
-        <div class="item2 mx-2 my-4 border-bottom py-2">
+        <div
+          class="item2 mx-2 my-4 border-bottom py-2"
+          @click="toPodcast(item)"
+        >
           <div class="left">
             <div class="text-xl">{{ item.title }}</div>
           </div>
@@ -198,6 +204,7 @@
 </template>
 
 <script setup>
+import Navbar from "@/components/navbar.vue";
 import Back from "@/components/back.vue";
 import { onMounted, ref } from "vue";
 import {
@@ -262,6 +269,45 @@ const isBriefVisible = ref(false); // 默认不展开
 function toggleBriefVisibility() {
   isBriefVisible.value = !isBriefVisible.value;
 }
+
+const toVideo = (item) => {
+  const query = `title=${encodeURIComponent(
+    item.title
+  )}&browseNum=${encodeURIComponent(
+    item.browseNum
+  )}&starNum=${encodeURIComponent(item.starNum)}&pkId=${encodeURIComponent(
+    item.pkId
+  )}`;
+  uni.navigateTo({
+    url: `/pages/index/ResourceDetail?${query}`,
+  });
+};
+
+const toBook = (item) => {
+  const query = `title=${encodeURIComponent(
+    item.title
+  )}&url=${encodeURIComponent(item.url)}&bookId=${encodeURIComponent(
+    item.pkId
+  )}&cover=${encodeURIComponent(item.cover)}&totalPage=${encodeURIComponent(
+    item.totalPage
+  )}`;
+  uni.navigateTo({
+    url: `/pages/index/bookDetail?${query}`,
+  });
+};
+
+const toPodcast = (item) => {
+  const query = `title=${encodeURIComponent(
+    item.title
+  )}&browseNum=${encodeURIComponent(
+    item.browseNum
+  )}&starNum=${encodeURIComponent(item.starNum)}&pkId=${encodeURIComponent(
+    item.pkId
+  )}&cover=${encodeURIComponent(item.cover)}`;
+  uni.navigateTo({
+    url: `/pages/index/podcastDetail?${query}`,
+  });
+};
 </script>
 
 <style scoped>
