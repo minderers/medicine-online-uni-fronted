@@ -1,7 +1,7 @@
 <template>
   <div class="mt-3">
     <div v-for="item in news.list" :key="item.pkId" class="mt-2">
-      <div class="item mx-2 flex justify-between my-2">
+      <div class="item mx-2 flex justify-between my-2" @click="toDetail(item)">
         <div class="" v-if="item.cover">
           <image :src="item.cover" class="img w-30 h-20 cover mr-2" />
         </div>
@@ -48,7 +48,11 @@
 import { onMounted, ref, reactive, computed } from "vue";
 import { getNewsList } from "@/service/news";
 import { onReachBottom } from "@dcloudio/uni-app";
-
+const toDetail = (item) => {
+  uni.navigateTo({
+    url: `/pages/index/NewsDetail?pkId=${encodeURIComponent(item.pkId)}`,
+  });
+};
 // 分⻚参数封装：当前⻚和每⻚条数
 const pageParams = reactive({
   page: 1,
