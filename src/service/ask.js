@@ -101,3 +101,27 @@ export const addTopic = (professorId, content, imgFiles) => {
     }
   });
 };
+
+/**
+ * 获取回复列表
+ * @param id
+ * @returns
+ */
+export const getReplyListById = (id) => {
+  return http({
+    method: "POST",
+    url: "/professor/replyList/" + id,
+  });
+};
+
+/**
+ * 获取问题详情
+ * @param id
+ * @returns
+ */
+export const getTopicById = (id) => {
+  return http({
+    method: "POST",
+    url: "/professor/topic/" + id,
+  });
+};

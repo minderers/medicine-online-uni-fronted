@@ -2,7 +2,7 @@
   <Back>提问</Back>
   <view class="p-5">
     <view class="flex items-center">
-      <image :src="professor?.avatar" class="avatar" />
+      <image :src="professor?.avatar" class="avatar" mode="aspectFill" />
       <text class="ml-2 name">{{ professor?.name }}</text>
     </view>
     <view class="mt-2 mb-2" :class="{ 'clamp-text': !isExpanded }">

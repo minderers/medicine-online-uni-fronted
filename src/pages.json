@@ -101,8 +101,9 @@
         "navigationStyle": "custom",
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "问题列表"
-        }
-      }，
+      }
+    },
+    {
       "path": "pages/index/NewsDetail",
       "style": {
         "navigationBarTextStyle": "white",

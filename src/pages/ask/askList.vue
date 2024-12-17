@@ -11,7 +11,7 @@
       <!-- 用户信息 -->
       <view class="user-info flex items-center mb-2">
         <image
-          :src="topic.avatar"
+          :src="getFullImageUrl(topic.avatar)"
           class="avatar w-10 h-10 rounded-full mr-3"
         ></image>
         <view>
@@ -19,20 +19,23 @@
           <text class="tag text-sm">{{ topic.tag }}</text>
         </view>
       </view>
+      <navigator :url="'/pages/ask/replyList?id=' + topic.pkId">
+        <!-- 提问内容 -->
+        <view class="content mt-2">
+          <text>{{ topic.content }}</text>
+        </view>
 
-      <!-- 提问内容 -->
-      <view class="content mt-2">
-        <text>{{ topic.content }}</text>
-      </view>
-
-      <!-- 图片或视频预览 -->
-      <view v-if="topic.img" class="media-preview mt-2">
-        <image
-          :src="topic.img"
-          class="preview-img w-full max-h-40 object-cover"
-        ></image>
-      </view>
-
+        <!-- 图片或视频预览 -->
+        <view v-if="topic.img" class="media-preview mt-2">
+          <image
+            v-for="(img, index) in getFullImageUrls(topic.img)"
+            :key="index"
+            :src="img"
+            mode="aspectFill"
+            class="preview-img w-full max-h-40 object-contain mb-2"
+          ></image>
+        </view>
+      </navigator>
       <!-- 提问时间 -->
       <view class="time mt-2 text-gray-500">
         <text>{{ formatDateTime(topic.createTime) }}</text>
@@ -86,6 +89,20 @@ const formatDateTime = (dateTime) => {
     date.getHours()
   ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
 };
+
+// 获取完整的图片URL
+const getFullImageUrl = (url) => {
+  if (!url) return "";
+  return url.startsWith("http")
+    ? url
+    : `https://medicineonline.oss-cn-hangzhou.aliyuncs.com/${url.trim()}`;
+};
+
+// 获取完整的图片URL数组
+const getFullImageUrls = (imgPaths) => {
+  if (!imgPaths) return [];
+  return imgPaths.split(",").map((path) => getFullImageUrl(path.trim()));
+};
 </script>
 
 <style scoped>
@@ -131,12 +148,16 @@ const formatDateTime = (dateTime) => {
   text-overflow: ellipsis;
 }
 
+.media-preview {
+  object-fit: contain; /* 确保图片保持其原始比例 */
+}
+
 .media-preview .preview-img {
-  width: 100%;
-  max-height: 160px;
-  object-fit: cover;
+  width: 32%;
+  max-height: 100px;
   border-radius: 8px;
   margin-top: 10px;
+  margin-right: 2px;
 }
 
 .time {
