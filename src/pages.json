@@ -83,8 +83,8 @@
       "style": {
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "音频详情"
-        }
-      },
+      }
+    },
     {
       "path": "pages/search/search",
       "style": {
