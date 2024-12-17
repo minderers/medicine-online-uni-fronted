@@ -160,6 +160,15 @@
       }
     },
     {
+
+      "path": "pages/ask/replyList",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "回复列表"
+      }
+    },
+    {
       "path": "pages/my/userInfo/userInfo",
       "style": {
         "navigationBarTextStyle": "white",
