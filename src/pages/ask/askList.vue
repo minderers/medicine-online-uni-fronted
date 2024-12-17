@@ -103,6 +103,7 @@ const getFullImageUrls = (imgPaths) => {
   if (!imgPaths) return [];
   return imgPaths.split(",").map((path) => getFullImageUrl(path.trim()));
 };
+
 </script>
 
 <style scoped>
@@ -129,10 +130,12 @@ const getFullImageUrls = (imgPaths) => {
   color: #32b880;
   background-color: white;
   border: 1px solid #32b880;
+
   padding: 2px 4px;
   border-radius: 4px;
   margin-left: 10px;
   margin-right: 10px;
+
   position: absolute;
   right: -1px;
 }
@@ -141,6 +144,7 @@ const getFullImageUrls = (imgPaths) => {
   margin-top: 10px;
   font-size: 14px;
   color: #333;
+
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
