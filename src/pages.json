@@ -108,8 +108,9 @@
         "navigationStyle": "custom",
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "问题列表"
-        }
-      }，
+      }
+    },
+    {
       "path": "pages/index/NewsDetail",
       "style": {
         "navigationBarTextStyle": "white",
@@ -142,6 +143,20 @@
       "style": {
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "专题视频集列表"
+      }
+    },
+    {
+      "path": "pages/test/examList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "试卷列表"
+      }
+    },
+    {
+      "path": "pages/test/bankList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "考试中"
       }
     }
   ],

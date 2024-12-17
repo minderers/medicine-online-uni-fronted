@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Back><slot>书籍列表</slot></Back>
+    <Back><slot>音频列表</slot></Back>
     <div class="podcastList mx-3">
       <div v-for="item in podcastList" :key="item.pkId">
         <div class="item m-2 border-bottom py-2">
