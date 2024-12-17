@@ -47,7 +47,7 @@
   white-space: normal;
   line-height: 1.5;
   border: 2rpx solid orange;
-  width: 100rpx;
+  width: 120rpx;
   height: 35rpx;
   padding: 2rpx;
   border-radius: 15rpx;
