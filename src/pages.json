@@ -160,6 +160,20 @@
       }
     },
     {
+      "path": "pages/test/examList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "试卷列表"
+      }
+    },
+    {
+      "path": "pages/test/bankList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "考试中"
+      }
+    },
+    {
       "path": "pages/ask/replyList",
       "style": {
         "navigationStyle": "custom",

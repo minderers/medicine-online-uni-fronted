@@ -1,6 +1,13 @@
 <template>
   <div>
     <Back>浏览记录</Back>
+    <div
+      class="clear-btn"
+      @click="clearHistory"
+      v-if="recordList.list.length > 0"
+    >
+      清空记录
+    </div>
     <div class="mt-3">
       <div v-for="item in recordList.list" :key="item.pkId" class="mt-2">
         <div
@@ -160,6 +167,27 @@ const getRandomColor = (index) => {
   };
 };
 
+const clearHistory = () => {
+  uni.showModal({
+    title: "提示",
+    content: "确定要清空所有浏览记录吗？",
+    success: function (res) {
+      if (res.confirm) {
+        // 清空本地存储
+        uni.setStorageSync("browseHistory", []);
+        // 清空当前列表
+        recordList.list = [];
+        recordList.total = 0;
+        finish.value = true;
+        uni.showToast({
+          title: "清空成功",
+          icon: "success",
+        });
+      }
+    },
+  });
+};
+
 onMounted(() => getRecordList());
 onReachBottom(() => getRecordList());
 </script>
@@ -225,5 +253,16 @@ onReachBottom(() => getRecordList());
   font-size: 28rpx;
   color: #666;
   padding: 20rpx 0;
+}
+.clear-btn {
+  position: absolute;
+  right: 30rpx;
+  bottom: 50rpx;
+  padding: 10rpx 20rpx;
+  background-color: #f2f2f2;
+  color: #666;
+  border-radius: 25rpx;
+  font-size: 24rpx;
+  z-index: 1;
 }
 </style>
