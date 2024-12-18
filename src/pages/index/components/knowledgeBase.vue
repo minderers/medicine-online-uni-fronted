@@ -288,6 +288,34 @@ const getRandomColor = (index) => {
 };
 
 const toDetail = (item) => {
+  // 保存浏览记录
+  let history = uni.getStorageSync("browseHistory") || [];
+
+  // 构造视频记录对象，确保包含所有必要信息
+  const videoRecord = {
+    pkId: item.pkId,
+    title: item.title,
+    cover: item.cover,
+    label: item.label,
+    browseNum: item.browseNum,
+    starNum: item.starNum,
+    type: "video", // 添加视频类型标识
+  };
+
+  // 检查是否已存在相同记录
+  const existIndex = history.findIndex((record) => record.pkId === item.pkId);
+  if (existIndex !== -1) {
+    history.splice(existIndex, 1);
+  }
+
+  history.unshift(videoRecord);
+
+  if (history.length > 50) {
+    history = history.slice(0, 50);
+  }
+
+  uni.setStorageSync("browseHistory", history);
+
   const query = `title=${encodeURIComponent(
     item.title
   )}&browseNum=${encodeURIComponent(
@@ -301,6 +329,28 @@ const toDetail = (item) => {
 };
 
 const toBook = (item) => {
+  // 保存浏览记录
+  let history = uni.getStorageSync("browseHistory") || [];
+
+  // 构造书籍记录对象
+  const bookRecord = {
+    ...item,
+    type: "book", // 添加书籍类型标识
+  };
+
+  const existIndex = history.findIndex((record) => record.pkId === item.pkId);
+  if (existIndex !== -1) {
+    history.splice(existIndex, 1);
+  }
+
+  history.unshift(bookRecord);
+
+  if (history.length > 50) {
+    history = history.slice(0, 50);
+  }
+
+  uni.setStorageSync("browseHistory", history);
+
   const query = `title=${encodeURIComponent(
     item.title
   )}&url=${encodeURIComponent(item.url)}&bookId=${encodeURIComponent(
@@ -314,6 +364,28 @@ const toBook = (item) => {
 };
 
 const toPodcast = (item) => {
+  // 保存浏览记录
+  let history = uni.getStorageSync("browseHistory") || [];
+
+  // 构造音频记录对象
+  const podcastRecord = {
+    ...item,
+    type: "podcast", // 添加音频类型标识
+  };
+
+  const existIndex = history.findIndex((record) => record.pkId === item.pkId);
+  if (existIndex !== -1) {
+    history.splice(existIndex, 1);
+  }
+
+  history.unshift(podcastRecord);
+
+  if (history.length > 50) {
+    history = history.slice(0, 50);
+  }
+
+  uni.setStorageSync("browseHistory", history);
+
   const query = `title=${encodeURIComponent(
     item.title
   )}&browseNum=${encodeURIComponent(

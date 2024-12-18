@@ -1,7 +1,7 @@
 <template>
   <div class="mt-3">
     <div v-for="item in news.list" :key="item.pkId" class="mt-2">
-      <div class="item mx-2 flex justify-between my-2">
+      <div class="item mx-2 flex justify-between my-2" @click="toDetail(item)">
         <div class="" v-if="item.cover">
           <image :src="item.cover" class="img w-30 h-20 cover mr-2" />
         </div>
@@ -48,7 +48,39 @@
 import { onMounted, ref, reactive, computed } from "vue";
 import { getNewsList } from "@/service/news";
 import { onReachBottom } from "@dcloudio/uni-app";
+const toDetail = (item) => {
+  // 保存浏览记录，确保包含所有需要的字段
+  let history = uni.getStorageSync("browseHistory") || [];
 
+  // 构造完整的新闻记录对象
+  const newsRecord = {
+    pkId: item.pkId,
+    title: item.title,
+    cover: item.cover,
+    label: item.label,
+    browseNum: item.browseNum,
+    // 新闻类型不需要 starNum，这样可以用来区分是新闻还是资源
+    type: "news", // 添加类型标识
+  };
+
+  // 检查是否已存在相同记录
+  const existIndex = history.findIndex((record) => record.pkId === item.pkId);
+  if (existIndex !== -1) {
+    history.splice(existIndex, 1);
+  }
+
+  history.unshift(newsRecord);
+
+  if (history.length > 50) {
+    history = history.slice(0, 50);
+  }
+
+  uni.setStorageSync("browseHistory", history);
+
+  uni.navigateTo({
+    url: `/pages/index/NewsDetail?pkId=${encodeURIComponent(item.pkId)}`,
+  });
+};
 // 分⻚参数封装：当前⻚和每⻚条数
 const pageParams = reactive({
   page: 1,
