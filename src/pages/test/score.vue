@@ -1,11 +1,10 @@
 <template>
+  <div class="header">
+    <Back>
+      <slot>考试成绩</slot>
+    </Back>
+  </div>
   <div class="score-container">
-    <div class="header">
-      <Back>
-        <slot>考试成绩</slot>
-      </Back>
-    </div>
-
     <div class="score-card">
       <div class="exam-title">考试成绩</div>
 
