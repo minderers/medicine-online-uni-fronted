@@ -3,6 +3,6 @@
   213123123
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Back from "@/components/back.vue";
 </script>

@@ -3,56 +3,36 @@
     <image
       src="@/static/profile/bg.png"
       mode="aspectFill"
-      class="left-0 top-0 w-full h-400rpx z-[-1]"
+      class="left-0 top-0 w-full h-400rpx"
     ></image>
   </view>
 
-  <!-- class="img overflow-hidden rounded-full shadow-md"
-      > -->
-  <!-- <image :src="myUserInfo.avatar" mode="aspectFill" /> -->
   <view class="bg">
     <image
-      src="@/static/images/avatar.jpg"
-      mode="scaleToFill"
+      v-if="userInfo"
+      :src="userInfo.avatar"
+      mode="aspectFill"
       class="avatar-img"
       @click="gotoUserInfo"
-    ></image>
-    <!-- <image
-          :src="`https://mxy-u.oss-cn-nanjing.aliyuncs.com/images/10.jpg`"
-          mode="aspectFit"
-          class="avatar"
-          style="
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-          "
-        /> -->
-
+    />
     <text class="userInfo text-gray-400" @click="gotoUserInfo">
       编辑个人资料
     </text>
     <view class="container">
-      <!-- <view class="name" v-if="userInfo?.nickname || userInfo?.wxOpenId"> -->
-      <text class="name"> <!-- {{ userInfo.nickname }} -->用户名 </text>
+      <text class="name" v-if="userInfo?.nickname || userInfo?.wxOpenId">
+        {{ userInfo.nickname }}
+      </text>
       <text class="identity text-gray-400">(普通用户)</text>
       <button class="authentication" @click="gotoBindPhone">学员认证</button>
     </view>
 
-    <!-- <view class="slogan" v-if="userInfo?.slogan || userInfo?.slogan"> -->
-    <view class="slogan text-gray-400">
-      学习口号：<!-- {{ userInfo.slogan }} -->
+    <view class="slogan text-gray-400" v-if="userInfo?.slogan">
+      学习口号：{{ userInfo.slogan }}
     </view>
-    <!-- <view class="noLogin" v-else>暂未登录</view> -->
-
-    <!-- <navigator url="./userInfo/userInfo" class="right">
-      <uniIcons class="icon" type="right" size="20" color="#000"></uniIcons>
-    </navigator> -->
 
     <!-- 操作 -->
     <!-- <view class="action-info" v-if="userInfo"> -->
     <view class="action-info mt-30rpx">
-      <!-- <navigation class="row" url="/pages/my/myResource?type=2"> -->
       <view class="content" @click="gotoMyCollect">
         <image
           src="@/static/profile/icon_wodeshoucang.png"
@@ -66,9 +46,7 @@
           class="h-5 w-5 ml-460rpx"
         />
       </view>
-      <!-- </navigation> -->
 
-      <!-- <navigation class="row" url="/pages/my/myResource?type=2"> -->
       <view class="content" @click="gotoMyRecord">
         <image
           src="@/static/profile/icon_xuexilishi.png"
@@ -82,9 +60,7 @@
           class="h-5 w-5 ml-460rpx"
         />
       </view>
-      <!-- </navigation> -->
 
-      <!-- <navigation class="row" url="/pages/my/myResource?type=2"> -->
       <view class="content" @click="gotoManual">
         <image
           src="@/static/profile/icon_shiyongshouce.png"
@@ -98,9 +74,7 @@
           class="h-5 w-5 ml-460rpx"
         />
       </view>
-      <!-- </navigation> -->
 
-      <!-- <navigation class="row" url="/pages/my/myResource?type=2"> -->
       <view class="content" @click="gotoAbout">
         <view class="content">
           <image
@@ -116,9 +90,7 @@
           />
         </view>
       </view>
-      <!-- </navigation> -->
 
-      <!-- <navigation class="row" url="/pages/my/myResource?type=2"> -->
       <view class="content">
         <image
           src="@/static/profile/icon_about_us.png"
@@ -132,7 +104,6 @@
           class="h-5 w-5 ml-460rpx"
         />
       </view>
-      <!-- </navigation> -->
     </view>
     <view class="line"></view>
 
@@ -147,8 +118,22 @@
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 
+import { onMounted } from "vue";
+
 const userStore = useUserStore();
 const { userInfo } = storeToRefs(userStore);
+
+// 可以在这里通过控制台打印等方式查看 userInfo 的值
+onMounted(() => {
+  console.log("当前 Pinia 中的 userInfo:", userInfo.value);
+  // console.log("当前 Pinia 中的 userInfo:", userInfo.nickname);
+  // console.log("当前 Pinia 中的 userInfo:", userInfo.value.nickname);
+  // 或者调用获取用户信息的方法，等待获取后再查看（假设获取是异步的）
+  userStore.getLoginUserInfo().then(() => {
+    console.log("获取后 Pinia 中的 userInfo:", userInfo.value);
+  });
+  console.log("-=-=-=-=-=-=", userInfo.value);
+});
 
 const gotoUserInfo = () => {
   uni.navigateTo({

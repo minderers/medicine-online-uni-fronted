@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { getUserInfo } from "@/service/user";
 
 // 定义 Store
 export const useUserStore = defineStore(
@@ -18,11 +19,20 @@ export const useUserStore = defineStore(
       userInfo.value = undefined;
     };
 
+    // 获取用户信息
+    const getLoginUserInfo = async () => {
+      const res = await getUserInfo();
+      if (res.code === 0) {
+        setUserInfo(res.data);
+      }
+    };
+
     // 记得 return
     return {
       userInfo,
       setUserInfo,
       clearUserInfo,
+      getLoginUserInfo,
     };
   },
   {
