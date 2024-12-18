@@ -34,23 +34,25 @@
               </view>
 
               <view v-if="child.selected && child.type == 0" class="box">
-                <view class="book-list">
+                <view>
                   <scroll-view scroll-y class="scroll">
-                    <view
-                      v-for="(book, index) in bookList"
-                      :key="index"
-                      @click="toBook(book)"
-                    >
-                      <Book class="book-container">
-                        <image
-                          slot="cover"
-                          :src="book.cover"
-                          class="book-image"
-                        />
+                    <view class="book-list">
+                      <view
+                        v-for="(book, index) in bookList"
+                        :key="index"
+                        @click="toBook(book)"
+                      >
+                        <Book class="book-container">
+                          <image
+                            slot="cover"
+                            :src="book.cover"
+                            class="book-image"
+                          />
 
-                        <view slot="title">{{ book.title }}</view>
-                        <view slot="browseNum">{{ book.browseNum }}</view>
-                      </Book>
+                          <view slot="title">{{ book.title }}</view>
+                          <view slot="browseNum">{{ book.browseNum }}</view>
+                        </Book>
+                      </view>
                     </view>
                   </scroll-view>
                 </view>

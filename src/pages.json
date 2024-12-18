@@ -158,6 +158,13 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "专题视频集列表"
       }
+    },
+    {
+      "path": "pages/activity/activityDetail",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "活动详情"
+      }
     }
   ],
   "globalStyle": {

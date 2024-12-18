@@ -153,7 +153,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (audioContext) {
-    audioContext.stop();
+    audioContext.destroy();
   }
   if (animationIntervalId) {
     clearInterval(animationIntervalId);
