@@ -22,3 +22,12 @@ export const getBankList = (data) => {
     data,
   });
 };
+
+// 提交考试答案
+export function submitExamAnswers(data) {
+  return http({
+    url: "/quiz/submit",
+    method: "POST",
+    data,
+  });
+}

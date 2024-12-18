@@ -1,6 +1,7 @@
 <template>
   <view>
     <!-- 父节点导航 -->
+
     <view class="tag-container flex">
       <view
         v-for="(item, index) in tabBars"
@@ -34,23 +35,27 @@
               </view>
 
               <view v-if="child.selected && child.type == 0" class="box">
-                <view class="book-list">
-                  <view
-                    v-for="(book, index) in bookList"
-                    :key="index"
-                    @click="toBook(book)"
-                  >
-                    <Book class="book-container">
-                      <image
-                        slot="cover"
-                        :src="book.cover"
-                        class="book-image"
-                      />
+                <view>
+                  <scroll-view scroll-y class="scroll">
+                    <view class="book-list">
+                      <view
+                        v-for="(book, index) in bookList"
+                        :key="index"
+                        @click="toBook(book)"
+                      >
+                        <Book class="book-container">
+                          <image
+                            slot="cover"
+                            :src="book.cover"
+                            class="book-image"
+                          />
 
-                      <view slot="title">{{ book.title }}</view>
-                      <view slot="browseNum">{{ book.browseNum }}</view>
-                    </Book>
-                  </view>
+                          <view slot="title">{{ book.title }}</view>
+                          <view slot="browseNum">{{ book.browseNum }}</view>
+                        </Book>
+                      </view>
+                    </view>
+                  </scroll-view>
                 </view>
               </view>
               <!-- 展开时显示子节点的子级 -->
@@ -76,53 +81,61 @@
               </view>
 
               <view v-if="child.selected && child.type == 1" class="box">
-                <view
-                  v-if="
-                    child.expanded &&
-                    child.children &&
-                    child.children.length > 0
-                  "
-                >
+                <scroll-view scroll-y class="scroll">
                   <view
-                    v-for="(video, index) in videoList"
-                    class="video-container"
-                    @click="toDetail(video)"
+                    v-if="
+                      child.expanded &&
+                      child.children &&
+                      child.children.length > 0
+                    "
                   >
-                    <Video>
-                      <image slot="cover" :src="video.cover" class="video" />
-                      <view slot="title">{{ video.title }}</view>
-                      <view slot="label">{{ video.label }}</view>
-                    </Video>
+                    <view
+                      v-for="(video, index) in videoList"
+                      class="video-container"
+                      @click="toDetail(video)"
+                    >
+                      <Video>
+                        <image slot="cover" :src="video.cover" class="video" />
+                        <view slot="title">{{ video.title }}</view>
+                        <view slot="label">{{ video.label }}</view>
+                      </Video>
+                    </view>
                   </view>
-                </view>
-                <view v-else class="font-grey">
-                  {{ videoList.length > 0 ? "" : "暂无视频" }}
-                </view>
+                  <view v-else class="font-grey">
+                    {{ videoList.length > 0 ? "" : "暂无视频" }}
+                  </view>
+                </scroll-view>
               </view>
 
               <view v-if="child.selected && child.type == 2" class="box">
-                <view
-                  v-for="(podcast, index) in podcastList"
-                  :key="podcast.pkId"
-                >
-                  <view @click="toPodcast(podcast)">
-                    <Video v-if="podcast.cover" class="video-container">
-                      <image slot="cover" :src="podcast.cover" class="video" />
-                      <view slot="title">{{ podcast.title }}</view>
-                      <view slot="label">{{ podcast.label }}</view>
-                    </Video>
-                    <view class="podcast" v-else>
-                      <view>{{ podcast.title }}</view>
-                      <view class="label">
-                        <span
-                          class="label-text"
-                          :style="getRandomColor(podcast.pkId)"
-                          >{{ podcast.label }}</span
-                        >
+                <scroll-view scroll-y class="scroll">
+                  <view
+                    v-for="(podcast, index) in podcastList"
+                    :key="podcast.pkId"
+                  >
+                    <view @click="toPodcast(podcast)">
+                      <Video v-if="podcast.cover" class="video-container">
+                        <image
+                          slot="cover"
+                          :src="podcast.cover"
+                          class="video"
+                        />
+                        <view slot="title">{{ podcast.title }}</view>
+                        <view slot="label">{{ podcast.label }}</view>
+                      </Video>
+                      <view class="podcast" v-else>
+                        <view>{{ podcast.title }}</view>
+                        <view class="label">
+                          <span
+                            class="label-text"
+                            :style="getRandomColor(podcast.pkId)"
+                            >{{ podcast.label }}</span
+                          >
+                        </view>
                       </view>
                     </view>
                   </view>
-                </view>
+                </scroll-view>
               </view>
             </view>
           </view>
@@ -407,6 +420,10 @@ onMounted(() => {
 </script>
 
 <style>
+.tag-container {
+  flex-wrap: wrap;
+}
+
 .item {
   background: #32b880;
   border-radius: 10rpx;
@@ -514,5 +531,9 @@ onMounted(() => {
   padding-bottom: 20rpx;
   padding-top: 20rpx;
   border-bottom: 1rpx solid #f2f2f2;
+}
+
+.scroll {
+  height: 1000rpx;
 }
 </style>
