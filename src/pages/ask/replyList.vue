@@ -20,7 +20,10 @@
         </view>
 
         <!-- 图片或视频预览 -->
-        <view v-if="topic.img" class="media-preview mt-2">
+        <view
+          v-if="topic.img && topic.img.length > 0"
+          class="media-preview mt-2"
+        >
           <image
             v-for="(img, index) in getFullImageUrls(topic.img)"
             :key="index"
@@ -45,7 +48,7 @@
       <text class="text-gray-400"> 全部回复 </text>
     </view>
     <view class="px-5">
-      <view v-if="replies.length">
+      <view v-if="replies.length" class="pb-20">
         <view v-for="(reply, index) in replies" :key="index">
           <view class="py-3 border-solid border-0 border-b-1 border-gray-300">
             <!-- 用户信息 -->
@@ -64,11 +67,15 @@
             </view>
 
             <!-- 图片或视频预览 -->
-            <view v-if="reply.img" class="media-preview mt-2">
+            <view
+              v-if="reply.img && reply.img.length > 0"
+              class="media-preview mt-2"
+            >
               <image
                 v-for="(img, imgIndex) in getFullImageUrls(reply.img)"
                 :key="imgIndex"
                 :src="img"
+                mode="aspectFill"
                 class="preview-img w-full max-h-40 object-contain mb-2"
               ></image>
             </view>
@@ -79,13 +86,19 @@
           </view>
         </view>
       </view>
-      <view v-else class="p-5">暂无回复</view>
+      <view v-else class="p-5 pb-20">暂无回复</view>
     </view>
+  </view>
+  <view class="fixed-button">
+    <navigator :url="'/pages/ask/reply?id=' + props.id">
+      <button class="w-50 bg-green-600 text-white">回复问题</button>
+    </navigator>
   </view>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
+import { onShow } from "@dcloudio/uni-app";
 import { getReplyListById, getTopicById } from "@/service/ask";
 import Back from "@/components/back.vue";
 
@@ -101,13 +114,25 @@ const topic = ref(null);
 
 // 格式化日期时间
 const formatDateTime = (dateTime) => {
-  const date = new Date(dateTime);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}-${String(date.getDate()).padStart(2, "0")} ${String(
-    date.getHours()
-  ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  if (!dateTime) return "";
+
+  // 将日期字符串转换为 yyyy-MM-dd 格式
+  const date = new Date(dateTime.split(" ")[0]); // 只取日期部分
+
+  try {
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid date");
+    }
+
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  } catch (err) {
+    console.error("日期格式化错误:", err);
+    // 如果转换失败，返回原始日期部分
+    return dateTime.split(" ")[0];
+  }
 };
 
 // 获取完整的图片URL
@@ -124,15 +149,33 @@ const getFullImageUrls = (imgPaths) => {
   return imgPaths.split(",").map((path) => getFullImageUrl(path.trim()));
 };
 
-onMounted(async () => {
+// 获取数据的方法
+const getReplyList = async () => {
   try {
-    const response = await getReplyListById(props.id);
-    const response2 = await getTopicById(props.id);
-    replies.value = response.data; // 假设响应数据在data字段中
-    topic.value = response2.data;
+    const [replyResponse, topicResponse] = await Promise.all([
+      getReplyListById(props.id),
+      getTopicById(props.id),
+    ]);
+
+    if (replyResponse.code === 0) {
+      replies.value = replyResponse.data;
+    }
+
+    if (topicResponse.code === 0) {
+      topic.value = topicResponse.data;
+    }
   } catch (error) {
     console.error("获取回复列表失败:", error);
+    uni.showToast({
+      title: "获取数据失败",
+      icon: "none",
+    });
   }
+};
+
+// 使用 onShow 替代 onMounted
+onShow(() => {
+  getReplyList();
 });
 </script>
 
@@ -194,5 +237,12 @@ onMounted(async () => {
 .status {
   margin-top: 10px;
   font-size: 12px;
+}
+
+.fixed-button {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 </style>

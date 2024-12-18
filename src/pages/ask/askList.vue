@@ -35,27 +35,29 @@
             class="preview-img w-full max-h-40 object-contain mb-2"
           ></image>
         </view>
-      </navigator>
-      <!-- 提问时间 -->
-      <view class="time mt-2 text-gray-500">
-        <text>{{ formatDateTime(topic.createTime) }}</text>
-      </view>
 
-      <!-- 是否回答 -->
-      <view class="status mt-2">
-        <text v-if="topic.status === '已回答'" class="text-green-600"
-          >已回答</text
-        >
-        <text v-else class="text-gray-400">未回答</text>
-      </view>
+        <!-- 提问时间 -->
+        <view class="time mt-2 text-gray-500">
+          <text>{{ formatDateTime(topic.createTime) }}</text>
+        </view>
+
+        <!-- 是否回答 -->
+        <view class="status mt-2">
+          <text v-if="topic.status === '已回答'" class="text-green-600"
+            >已回答</text
+          >
+          <text v-else class="text-gray-400">未回答</text>
+        </view>
+      </navigator>
     </view>
   </view>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import Back from "@/components/back.vue";
 import { getTopicListById } from "@/service/ask";
+import { onShow } from "@dcloudio/uni-app";
 
 const props = defineProps({
   id: {
@@ -68,26 +70,82 @@ const topics = ref([]);
 const loading = ref(true);
 const error = ref(null);
 
-onMounted(async () => {
+const getTopicList = async () => {
   try {
-    const response = await getTopicListById(props.id);
-    topics.value = response.data; // 假设响应的数据存储在response.data中
+    loading.value = true;
+    error.value = null;
+
+    // 设置请求超时
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("请求超时")), 10000); // 10秒超时
+    });
+
+    // 先尝试从缓存获取数据
+    const cachedData = uni.getStorageSync(`professor_questions_${props.id}`);
+    if (cachedData) {
+      topics.value = cachedData;
+      loading.value = false;
+    }
+
+    // 使用 Promise.race 处理超时
+    const res = await Promise.race([
+      getTopicListById(props.id),
+      timeoutPromise,
+    ]);
+
+    if (res.code === 0) {
+      topics.value = res.data || [];
+      // 更新缓存
+      uni.setStorageSync(`professor_questions_${props.id}`, res.data);
+    } else {
+      throw new Error(res.msg || "获取数据失败");
+    }
   } catch (err) {
-    error.value = err.message || "无法获取数据";
+    console.error("获取话题列表失败:", err);
+    error.value = err.message || "获取数据失败";
+
+    // 如果请求失败但有缓存数据，显示提示但保留缓存数据
+    if (topics.value.length > 0) {
+      uni.showToast({
+        title: "网络不佳，显示缓存数据",
+        icon: "none",
+      });
+    }
   } finally {
     loading.value = false;
   }
+};
+
+// 使用 onMounted 和 onShow 双重保障
+onMounted(() => {
+  getTopicList();
+});
+
+onShow(() => {
+  getTopicList();
 });
 
 // 格式化日期时间
 const formatDateTime = (dateTime) => {
-  const date = new Date(dateTime);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-    2,
-    "0"
-  )}-${String(date.getDate()).padStart(2, "0")} ${String(
-    date.getHours()
-  ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+  if (!dateTime) return "";
+
+  // 将日期字符串转换为 yyyy-MM-dd 格式
+  const date = new Date(dateTime.split(" ")[0]); // 只取日期部分
+
+  try {
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid date");
+    }
+
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  } catch (err) {
+    console.error("日期格式化错误:", err);
+    // 如果转换失败，返回原始日期部分
+    return dateTime.split(" ")[0];
+  }
 };
 
 // 获取完整的图片URL
@@ -103,6 +161,13 @@ const getFullImageUrls = (imgPaths) => {
   if (!imgPaths) return [];
   return imgPaths.split(",").map((path) => getFullImageUrl(path.trim()));
 };
+
+// 确保组件卸载时清理
+onUnmounted(() => {
+  topics.value = [];
+  loading.value = false;
+  error.value = null;
+});
 </script>
 
 <style scoped>

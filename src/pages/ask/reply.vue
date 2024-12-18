@@ -1,27 +1,45 @@
 <template>
-  <Back>提问</Back>
-  <view class="p-5">
-    <view class="flex items-center">
-      <image :src="professor?.avatar" class="avatar" mode="aspectFill" />
-      <text class="ml-2 name">{{ professor?.name }}</text>
-    </view>
-    <view class="mt-2 mb-2" :class="{ 'clamp-text': !isExpanded }">
-      <text class="content experience">{{ professor?.experience }}</text>
-    </view>
-    <view class="flex justify-center" @click="toggleExpand">
-      <image
-        class="w-5 h-5 transform duration-300 cursor-pointer"
-        :class="{ 'rotate-180': !isExpanded }"
-        src="../../static/expertBank/icon_xialai@3x.png"
-      />
+  <Back>回复</Back>
+  <view class="p-5" v-if="topic">
+    <view class="pr-5">
+      <!-- 用户信息 -->
+      <view class="user-info flex items-center mb-2">
+        <image
+          :src="getFullImageUrl(topic.avatar)"
+          class="avatar w-10 h-10 rounded-full mr-3"
+        ></image>
+        <view>
+          <text class="name font-bold">{{ topic.name }}</text>
+          <text class="tag text-sm">{{ topic.tag }}</text>
+        </view>
+      </view>
+      <!-- 提问内容 -->
+      <view class="content mt-2">
+        <text>{{ topic.content }}</text>
+      </view>
+
+      <!-- 图片或视频预览 -->
+      <view v-if="topic.img" class="media-preview mt-2">
+        <image
+          v-for="(img, index) in getFullImageUrls(topic.img)"
+          :key="index"
+          :src="img"
+          mode="aspectFill"
+          class="preview-img w-full max-h-40 object-contain mb-2"
+        ></image>
+      </view>
+      <!-- 提问时间 -->
+      <view class="time mt-2 text-gray-500">
+        <text>{{ formatDateTime(topic.createTime) }}</text>
+      </view>
     </view>
     <view class="mt-5">
-      <text class="font-semibold text-lg">向{{ professor?.name }}提问</text>
+      <text class="font-semibold text-lg">向{{ topic.name }}回复</text>
     </view>
 
     <view class="mt-10 mb-5 border-1 border-solid border-gray-300 rounded-lg">
       <textarea
-        v-model="questionText"
+        v-model="replyText"
         placeholder="请描述您在学习中遇到的问题"
         class="w-full p-2 mt-2 border rounded"
       ></textarea>
@@ -54,16 +72,17 @@
       </view>
     </view>
 
-    <button class="w-50 bg-green-600 text-white mt-4" @click="submitQuestion">
+    <button class="w-50 bg-green-600 text-white mt-4" @click="submitReply">
       提交
     </button>
   </view>
+  <view v-else> 加载中... </view>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import Back from "@/components/back.vue";
-import { getProfessorById, addTopic } from "@/service/ask";
+import { getTopicById, addReply } from "@/service/ask";
 import { onLoad } from "@dcloudio/uni-app";
 
 const props = defineProps({
@@ -73,22 +92,17 @@ const props = defineProps({
   },
 });
 
-const getProfessorInfo = async () => {
-  const res = await getProfessorById(props.id);
+const getTopicInfo = async () => {
+  const res = await getTopicById(props.id);
   if (res.code === 0) {
-    professor.value = res.data;
+    topic.value = res.data;
   }
 };
 
-const professor = ref(null);
-const isExpanded = ref(true);
-const questionText = ref("");
+const topic = ref(null);
+const replyText = ref("");
 const images = ref([]);
 const video = ref(null);
-
-const toggleExpand = () => {
-  isExpanded.value = !isExpanded.value;
-};
 
 const uploadImage = () => {
   uni.chooseImage({
@@ -136,32 +150,21 @@ const removeVideo = () => {
   video.value = null;
 };
 
-const submitQuestion = async () => {
+const submitReply = async () => {
   try {
-    if (!questionText.value.trim()) {
-      uni.showToast({
-        title: "请输入问题内容",
-        icon: "none",
-      });
-      return;
-    }
-
-    const response = await addTopic(
+    const response = await addReply(
       props.id,
-      questionText.value,
+      replyText.value,
       [...images.value, video.value].filter(Boolean)
     );
-
     if (response && response.code === 0) {
       uni.showToast({
         title: "提交成功",
         icon: "success",
       });
-
-      // 清空表单
-      questionText.value = "";
-      images.value = [];
-      video.value = null;
+      setTimeout(() => {
+        uni.navigateBack();
+      }, 1500);
     } else {
       uni.showToast({
         title: response?.message || "提交失败",
@@ -169,7 +172,7 @@ const submitQuestion = async () => {
       });
     }
   } catch (error) {
-    console.error("Error submitting question:", error);
+    console.error("Error submitting reply:", error);
     uni.showToast({
       title: "提交出错",
       icon: "none",
@@ -177,38 +180,95 @@ const submitQuestion = async () => {
   }
 };
 
-onLoad(() => getProfessorInfo());
+// 格式化日期时间
+const formatDateTime = (dateTime) => {
+  if (!dateTime) return "";
+
+  // 将日期字符串转换为 yyyy-MM-dd 格式
+  const date = new Date(dateTime.split(" ")[0]); // 只取日期部分
+
+  try {
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid date");
+    }
+
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  } catch (err) {
+    console.error("日期格式化错误:", err);
+    // 如果转换失败，返回原始日期部分
+    return dateTime.split(" ")[0];
+  }
+};
+
+// 获取完整的图片URL
+const getFullImageUrl = (url) => {
+  if (!url) return "";
+  return url.startsWith("http")
+    ? url
+    : `https://medicineonline.oss-cn-hangzhou.aliyuncs.com/${url.trim()}`;
+};
+
+// 获取完整的图片URL数组
+const getFullImageUrls = (imgPaths) => {
+  if (!imgPaths) return [];
+  return imgPaths.split(",").map((path) => getFullImageUrl(path.trim()));
+};
+
+onLoad(() => getTopicInfo());
 </script>
 
 <style scoped>
-.avatar {
-  width: 70px;
-  height: 70px;
+.user-info .avatar {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  margin-bottom: 10px;
+  margin-right: 10px;
 }
 
-.name {
-  font-size: 20px;
+.user-info .name {
+  font-size: 16px;
   font-weight: bold;
-  margin-bottom: 5px;
 }
 
-.experience {
+.user-info .tag {
+  display: inline-block;
+  font-size: 12px;
+  color: #32b880;
+  background-color: white;
+  border: 1px solid #32b880;
+  padding: 2px 4px;
+  border-radius: 4px;
+  margin-left: 10px;
+  margin-right: 10px;
+  position: absolute;
+  right: -1px;
+}
+
+.content {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.preview-img {
+  width: 100%;
+  max-height: 160px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.time {
+  margin-top: 10px;
+  font-size: 12px;
   color: #999;
-  display: -webkit-box;
-  -webkit-line-clamp: 7;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: all 0.3s ease-in-out;
-  line-clamp: 7;
 }
 
-.clamp-text .experience {
-  -webkit-line-clamp: unset;
-  display: block;
-  line-clamp: unset;
+.status {
+  margin-top: 10px;
+  font-size: 12px;
 }
 
 .upload-button {

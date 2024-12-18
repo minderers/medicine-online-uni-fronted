@@ -83,8 +83,8 @@
       "style": {
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "音频详情"
-        }
-      },
+      }
+    },
     {
       "path": "pages/search/search",
       "style": {
@@ -165,6 +165,14 @@
         "navigationStyle": "custom",
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "回复列表"
+      }
+    },
+    {
+      "path": "pages/ask/reply",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "回复问题"
       }
     }
   ],
