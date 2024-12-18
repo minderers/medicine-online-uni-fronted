@@ -1,9 +1,13 @@
 import { http } from "@/utils/http";
 
-export const getResourceCategory = (parentId) => {
+export const getResourceCategory = (parentId, type) => {
   return http({
     method: "POST",
-    url: `/resource/category?parentId=${parentId}`, // 后端接口地址
+    url: `/resource/category`,
+    data: {
+      parentId: parentId,
+      type: type,
+    },
   });
 };
 

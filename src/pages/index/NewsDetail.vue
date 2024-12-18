@@ -2,14 +2,27 @@
   <Back>
     <slot>详情</slot>
   </Back>
-  <!-- 使用 rich-text 组件渲染 HTML 内容 -->
   <rich-text :nodes="HTMLcontent"></rich-text>
+  <div class="star" @click="addCollections">
+    <div class="icon">
+      <image
+        :src="
+          isStarred
+            ? '../../static/index/icon_selectedshoucang.png'
+            : '../../static/index/icon_shoucang.png'
+        "
+        mode="scaleToFill"
+      />
+    </div>
+    收藏
+  </div>
 </template>
 
 <script setup>
 import { ref, defineProps, onMounted } from "vue";
 import Back from "../../components/back.vue";
 import { getNewsDetail } from "@/service/news";
+import { addCollection, deleteCollection } from "@/service/star";
 
 const props = defineProps({
   pkId: Number,
@@ -28,73 +41,84 @@ const getDetail = async () => {
     '<span data-text="　"></span>'
   );
   HTMLcontent.value = contentWithHandledSpaces;
-  // // 将 HTML 字符串转换为 rich-text 组件可以接受的格式
-  // content.value = convertHtmlToNodes(HTMLcontent.value);
 };
 
 onMounted(() => {
   getDetail();
+  console.log("组件挂载，pkId:", props.pkId);
 });
 
-// // 将 HTML 字符串转换为 rich-text 组件的节点数组
-// function convertHtmlToNodes(html) {
-//   // 简单的 HTML 净化逻辑，去除 script 标签和 onXXX 事件处理器
-//   const purifiedHtml = purifyHtml(html);
+const isStarred = ref(false);
+const addCollections = async () => {
+  try {
+    if (!props.pkId) {
+      console.error("pkId is missing:", props.pkId);
+      uni.showToast({
+        title: "参数错误",
+        icon: "error",
+      });
+      return;
+    }
 
-//   const nodes = [];
-//   // 使用正则表达式匹配所有标签，并处理行内样式
-//   const tagRegex = /<(\w+)([^>]*)>(.*?)<\/\1>/gi;
-//   let match;
-//   while ((match = tagRegex.exec(purifiedHtml)) !== null) {
-//     const tag = match[1];
-//     const attrs = match[2];
-//     const text = match[3].trim();
+    console.log("调用收藏接口，参数：", {
+      contentId: props.pkId,
+      type: "article",
+      currentStatus: isStarred.value,
+    });
 
-//     if (tag === "p" || tag === "span") {
-//       // 提取行内样式
-//       const styleMatch = attrs.match(/style="([^"]*)"/);
-//       const style = styleMatch ? styleMatch[1] : "";
+    const res = isStarred.value
+      ? await deleteCollection(props.pkId, "article")
+      : await addCollection(props.pkId, "article");
 
-//       // 根据标签和样式创建节点
-//       nodes.push({
-//         type: "text",
-//         text: text,
-//         style: styleToRichTextStyle(style),
-//       });
-//     } else if (tag === "br") {
-//       nodes.push({
-//         type: "text",
-//         text: "\n",
-//       });
-//     }
-//   }
+    console.log("收藏接口返回：", res);
 
-//   return nodes;
-// }
-
-// // 将行内样式转换为 rich-text 组件的样式格式
-// function styleToRichTextStyle(style) {
-//   const styles = style.split(";").reduce((acc, curr) => {
-//     const [key, value] = curr.split(":").map((s) => s.trim());
-//     if (key && value) {
-//       acc[key] = value;
-//     }
-//     return acc;
-//   }, {});
-
-//   return styles;
-// }
-
-// // 简单的 HTML 净化函数，移除 script 标签和 onXXX 事件处理器
-// function purifyHtml(html) {
-//   return html
-//     .replace(/<script[^>]*>([\s\S]*?)<\/script>/g, "") // 移除 script 标签
-//     .replace(/<style[^>]*>([\s\S]*?)<\/style>/g, "") // 移除 style 标签
-//     .replace(/on[a-z]+\s*=\s*"[^"]*"/g, "") // 移除 onXXX 事件处理器
-//     .replace(/on[a-z]+\s*=\s*'[^']*'/g, ""); // 移除 onXXX 事件处理器
-// }
+    if (res.code === 0) {
+      isStarred.value = !isStarred.value;
+      uni.showToast({
+        title: isStarred.value ? "收藏成功" : "取消收藏",
+        icon: "success",
+      });
+    } else {
+      uni.showToast({
+        title: res.msg || "操作失败",
+        icon: "error",
+      });
+    }
+  } catch (error) {
+    console.error("收藏操作失败:", error);
+    uni.showToast({
+      title: error.message || "操作失败",
+      icon: "error",
+    });
+  }
+};
 </script>
 
-<style lang="scss" scoped>
-/* 你可以在这里根据需要编写额外的样式 */
+<style scoped>
+.star {
+  background: #32b880;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 40rpx 30rpx;
+  color: white;
+}
+.icon {
+  display: flex;
+  align-items: center;
+  .left,
+  .right {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    .number {
+      margin-left: 5px;
+    }
+  }
+  image {
+    width: 40rpx;
+    height: 30rpx;
+  }
+}
 </style>

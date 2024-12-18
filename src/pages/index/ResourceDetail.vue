@@ -47,9 +47,13 @@
               />
               <div class="text-gray-400 ml-2">{{ browseNum }}</div>
             </div>
-            <div class="right">
+            <div class="right" @click="addCollections">
               <image
-                src="../../static/index/icon_shoucang.png"
+                :src="
+                  isStarred
+                    ? '../../static/index/icon_selectedshoucang.png'
+                    : '../../static/index/icon_shoucang.png'
+                "
                 mode="scaleToFill"
               />
               <div class="text-gray-400 mx-2">{{ starNum }}</div>
@@ -84,6 +88,7 @@
 import Back from "@/components/back.vue";
 import { ref, defineProps, onMounted, reactive } from "vue";
 import { getCourseDetail } from "@/service/resource";
+import { addCollection, deleteCollection } from "@/service/star";
 const navIndex = ref(0);
 const isletIndex = ref(0);
 const tabBars = ref([{ name: "简介" }, { name: "目录" }]);
@@ -115,10 +120,55 @@ const getVideo = async () => {
 };
 onMounted(() => {
   getVideo();
+  console.log("组件挂载，pkId:", props.pkId);
 });
 const controls = ref(true);
 const autoplay = ref(false);
 const muted = ref(false);
+const isStarred = ref(false);
+const addCollections = async () => {
+  try {
+    if (!props.pkId) {
+      console.error("pkId is missing:", props.pkId);
+      uni.showToast({
+        title: "参数错误",
+        icon: "error",
+      });
+      return;
+    }
+
+    console.log("调用收藏接口，参数：", {
+      contentId: props.pkId,
+      type: "video",
+      currentStatus: isStarred.value,
+    });
+
+    const res = isStarred.value
+      ? await deleteCollection(props.pkId, "video")
+      : await addCollection(props.pkId, "video");
+
+    console.log("收藏接口返回：", res);
+
+    if (res.code === 0) {
+      isStarred.value = !isStarred.value;
+      uni.showToast({
+        title: isStarred.value ? "收藏成功" : "取消收藏",
+        icon: "success",
+      });
+    } else {
+      uni.showToast({
+        title: res.msg || "操作失败",
+        icon: "error",
+      });
+    }
+  } catch (error) {
+    console.error("收藏操作失败:", error);
+    uni.showToast({
+      title: error.message || "操作失败",
+      icon: "error",
+    });
+  }
+};
 </script>
 
 <style lang="scss" scoped>
