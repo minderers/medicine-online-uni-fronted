@@ -1,6 +1,7 @@
 <template>
   <view>
     <!-- 父节点导航 -->
+
     <view class="tag-container flex">
       <view
         v-for="(item, index) in tabBars"
@@ -347,6 +348,10 @@ onMounted(() => {
 </script>
 
 <style>
+.tag-container {
+  flex-wrap: wrap;
+}
+
 .item {
   background: #32b880;
   border-radius: 10rpx;
