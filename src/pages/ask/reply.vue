@@ -40,7 +40,7 @@
     <view class="mt-10 mb-5 border-1 border-solid border-gray-300 rounded-lg">
       <textarea
         v-model="replyText"
-        placeholder="请描述您在学习中遇到的问题"
+        placeholder="请输入回复内容"
         class="w-full p-2 mt-2 border rounded"
       ></textarea>
     </view>
