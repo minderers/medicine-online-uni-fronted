@@ -160,13 +160,13 @@
       }
     },
     {
-
       "path": "pages/activity/activityDetail",
       "style": {
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "活动详情"
-}
-      },
+      }
+    },
+    {
       "path": "pages/test/examList",
       "style": {
         "navigationBarTextStyle": "white",
@@ -243,7 +243,6 @@
       "style": {
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "考试结果"
-
       }
     }
   ],
