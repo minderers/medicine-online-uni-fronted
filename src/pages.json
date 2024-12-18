@@ -174,6 +174,48 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "回复问题"
       }
+    },
+    {
+      "path": "pages/my/userInfo/userInfo",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "个⼈信息"
+      }
+    },
+    {
+      "path": "pages/my/bindPhone",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "绑定手机"
+      }
+    },
+    {
+      "path": "pages/my/myCollect",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "我的收藏"
+      }
+    },
+    {
+      "path": "pages/my/myRecord",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "浏览记录"
+      }
+    },
+    {
+      "path": "pages/my/manual",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "使用手册"
+      }
+    },
+    {
+      "path": "pages/my/about",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "关于我们"
+      }
     }
   ],
   "globalStyle": {
@@ -225,5 +267,23 @@
       }
     ]
   },
-  "subPackages": []
+  "subPackages": [
+    // {
+    //   "root": "pageUser",
+    //   "pages": [
+    //     // {
+    //     //   "path": "userInfo/userInfo",
+    //     //   "style": {
+    //     //     "navigationBarTitleText": "个⼈信息"
+    //     //   }
+    //     // }
+    //     // {
+    //     //   "path": "setting/setting",
+    //     //   "style": {
+    //     //     "navigationBarTitleText": "设置"
+    //     //   }
+    //     // }
+    //   ]
+    // }
+  ]
 }
