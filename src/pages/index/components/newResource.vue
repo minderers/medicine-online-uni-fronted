@@ -46,7 +46,6 @@
 
 <script setup>
 import { onMounted, ref, reactive } from "vue";
-import ResourceDetail from "../ResourceDetail.vue";
 import { getsPageCourseList, getCourseDetail } from "@/service/resource";
 import { onReachBottom } from "@dcloudio/uni-app";
 
@@ -88,14 +87,46 @@ onMounted(() => getradioList());
 // ⻚⾯触底加载数据
 onReachBottom(() => getradioList());
 const toDetail = (item) => {
+  // 保存浏览记录
+  let history = uni.getStorageSync("browseHistory") || [];
+
+  // 构造资源记录对象，确保包含所有必要信息
+  const resourceRecord = {
+    pkId: item.pkId,
+    title: item.title,
+    cover: item.cover,
+    label: item.label,
+    browseNum: item.browseNum || 0,
+    starNum: item.starNum || 0,
+    type: "resource", // 明确标记为 resource 类型
+  };
+
+  // 检查是否已存在相同记录
+  const existIndex = history.findIndex((record) => record.pkId === item.pkId);
+  if (existIndex !== -1) {
+    history.splice(existIndex, 1);
+  }
+
+  // 将新记录添加到开头
+  history.unshift(resourceRecord);
+
+  // 限制记录数量
+  if (history.length > 50) {
+    history = history.slice(0, 50);
+  }
+
+  // 保存到本地存储
+  uni.setStorageSync("browseHistory", history);
+
+  // 跳转到详情页
   uni.navigateTo({
     url: `/pages/index/ResourceDetail?title=${encodeURIComponent(
       item.title
     )}&browseNum=${encodeURIComponent(
       item.browseNum
-    )}&starNum=${encodeURIComponent(item.starNum)}
-    &pkId=${encodeURIComponent(item.pkId)}
-    `,
+    )}&starNum=${encodeURIComponent(item.starNum)}&pkId=${encodeURIComponent(
+      item.pkId
+    )}`,
   });
 };
 // 定义一个计算属性来返回随机颜色
@@ -159,7 +190,7 @@ const getRandomColor = (index) => {
 }
 .text-ellipsis {
   overflow: hidden; /* 确保内容超出容器时会被隐藏 */
-  display: -webkit-box; /* 使用弹性盒子布局模型 */
+  display: -webkit-box; /* ���用弹性盒子布局模型 */
   -webkit-line-clamp: 2; /* 限制在两行 */
   -webkit-box-orient: vertical; /* 垂直排列盒子 */
   text-overflow: ellipsis; /* 多余文本用省略号表示 */
