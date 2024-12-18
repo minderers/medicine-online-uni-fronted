@@ -160,7 +160,6 @@
       }
     },
     {
-
       "path": "pages/test/examList",
       "style": {
         "navigationBarTextStyle": "white",
@@ -172,10 +171,9 @@
       "style": {
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "考试中"
-}
-      },
+      }
+    },
     {
-
       "path": "pages/ask/replyList",
       "style": {
         "navigationStyle": "custom",
@@ -223,6 +221,13 @@
       "style": {
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "关于我们"
+      }
+    },
+    {
+      "path": "pages/test/score",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "考试结果"
       }
     }
   ],

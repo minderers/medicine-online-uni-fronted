@@ -5,7 +5,7 @@
     </Back>
     <div v-for="item in Exams" :key="item.pkId" class="mt-2">
       <div class="item m-2 flex justify-between py-5 px-4">
-        <div class="left">{{ item.title }}</div>
+        <div class="left">{{ item.title }}{{ item.paperTitle }}</div>
         <div class="right text-white" @click="toAnswer(item)">立即答题</div>
       </div>
     </div>
@@ -21,8 +21,10 @@ const props = defineProps({
 });
 const toAnswer = (item) => {
   uni.navigateTo({
-    url: `pages/test/bankList?pkId=${encodeURIComponent(item.pkId)}
-    &timeLimit=${encodeURIComponent(item.timeLimit)}`,
+    url: `/pages/test/bankList?pkId=${encodeURIComponent(item.pkId)}
+    &timeLimit=${encodeURIComponent(item.timeLimit)}
+    &title=${encodeURIComponent(item.title)}
+    &paperId=${encodeURIComponent(item.paperId)}`,
   });
 };
 const Exams = ref([]);
