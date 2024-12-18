@@ -1,8 +1,12 @@
 <template>
   <div>
-    <Back><slot>书籍列表</slot></Back>
+    <Back><slot>音频列表</slot></Back>
     <div class="podcastList mx-3">
-      <div v-for="item in podcastList" :key="item.pkId">
+      <div
+        v-for="item in podcastList"
+        :key="item.pkId"
+        @click="toPodcast(item)"
+      >
         <div class="item m-2 border-bottom py-2">
           <div class="left">
             <div class="text-xl">{{ item.title }}</div>
@@ -57,6 +61,18 @@ const getPodcastList = async () => {
 onMounted(() => {
   getPodcastList();
 });
+const toPodcast = (item) => {
+  const query = `title=${encodeURIComponent(
+    item.title
+  )}&browseNum=${encodeURIComponent(
+    item.browseNum
+  )}&starNum=${encodeURIComponent(item.starNum)}&pkId=${encodeURIComponent(
+    item.pkId
+  )}&cover=${encodeURIComponent(item.cover)}`;
+  uni.navigateTo({
+    url: `/pages/index/podcastDetail?${query}`,
+  });
+};
 </script>
 
 <style lang="scss" scoped>

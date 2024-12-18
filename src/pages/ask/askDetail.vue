@@ -5,6 +5,7 @@
     <view class="professor-info">
       <image
         :src="professor?.avatar"
+        mode="aspectFill"
         class="avatar shadow-md shadow-gray-500"
       ></image>
     </view>
@@ -112,7 +113,10 @@ const props = defineProps({
 const getProfessorInfo = async () => {
   const res = await getProfessorById(props.id);
   if (res.code === 0) {
-    professor.value = res.data;
+    professor.value = {
+      ...res.data,
+      list: res.data.list?.slice(0, 3),
+    };
   }
 };
 

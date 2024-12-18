@@ -25,6 +25,15 @@
         <text class="sex" @tap="toggleSexPopup">{{
           myUserInfo.sex === 0 ? "男" : "女"
         }}</text>
+
+        <uni-popup ref="sexPopup" type="bottom" background-color="#fff">
+          <view class="sexPopup">
+            <button @tap="selectSex(0)">男</button>
+            <button @tap="selectSex(1)">女</button>
+            <button @tap="closeSexPopup">取消</button>
+          </view>
+        </uni-popup>
+
         <image
           src="@/static/index/next.png"
           mode="scaleToFill"
@@ -36,6 +45,7 @@
       <view class="content">
         <text class="left">昵称</text>
         <input
+          v-if="userInfo?.nickname"
           type="text"
           placeholder="请输入昵称(10字以内)"
           maxlength="10"
@@ -52,7 +62,7 @@
 
       <view class="content">
         <text class="left">电话</text>
-        <text class="right">
+        <text class="right" v-if="userInfo?.phone">
           {{ userInfo.phone }}
           <!-- <text class="txt">{{ userInfo.phone }}</text> -->
         </text>
@@ -71,6 +81,7 @@
       <view class="content">
         <text class="left">口号</text>
         <input
+          v-if="userInfo?.slogan"
           type="text"
           placeholder="请输入口号(15字以内)"
           maxlength="15"
@@ -99,14 +110,6 @@
       </view>
     </view>
   </view>
-
-  <uni-popup ref="sexPopup" :is-mask-click="false">
-    <view class="sexPopup">
-      <button @tap="selectSex(0)">男</button>
-      <button @tap="selectSex(1)">女</button>
-      <button @tap="closeSexPopup">取消</button>
-    </view>
-  </uni-popup>
 </template>
 
 <script setup>
@@ -361,19 +364,31 @@ const handleQuitClick = () => {
   flex: 1; // 按钮占据可用空间的1份
   height: 80rpx;
 }
-.sex-popup {
+.sexPopup {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20rpx;
+  padding: 5rpx;
   button {
-    margin: 10rpx;
-    padding: 10rpx;
-    background-color: #f5f5f5;
+    margin: 5rpx;
+    padding: 5rpx;
+    background-color: #ffffff;
     border: none;
-    border-radius: 5rpx;
-    font-size: 36rpx;
+    border-radius: 20rpx;
+    font-size: 42rpx;
+    width: 400rpx;
+    height: 150rpx;
   }
+}
+.custom-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20rpx;
+}
+.sexPopup button:hover {
+  background-color: #e0e0e0;
 }
 </style>

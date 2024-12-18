@@ -41,7 +41,7 @@
       <view class="line"></view>
     </view>
 
-    <button class="button" @tab="handleSubmit">认证</button>
+    <button class="button" @click="handleSubmit">认证</button>
   </view>
 </template>
 
@@ -127,6 +127,7 @@ const handleSubmit = async () => {
   font-size: 36rpx;
 }
 .phone-number {
+  width: 100%; // 可以考虑改为固定像素值等，看效果
   margin-top: 40rpx;
 }
 .line {

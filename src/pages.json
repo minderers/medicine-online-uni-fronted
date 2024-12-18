@@ -72,6 +72,20 @@
       }
     },
     {
+      "path": "pages/index/bookDetail",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "图书详情"
+      }
+    },
+    {
+      "path": "pages/index/podcastDetail",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "音频详情"
+      }
+    },
+    {
       "path": "pages/search/search",
       "style": {
         "navigationBarTextStyle": "white",
@@ -146,6 +160,43 @@
       }
     },
     {
+      "path": "pages/activity/activityDetail",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "活动详情"
+      }
+    },
+    {
+      "path": "pages/test/examList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "试卷列表"
+      }
+    },
+    {
+      "path": "pages/test/bankList",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "考试中"
+      }
+    },
+    {
+      "path": "pages/ask/replyList",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "回复列表"
+      }
+    },
+    {
+      "path": "pages/ask/reply",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "回复问题"
+      }
+    },
+    {
       "path": "pages/my/userInfo/userInfo",
       "style": {
         "navigationBarTextStyle": "white",
@@ -185,6 +236,13 @@
       "style": {
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "关于我们"
+      }
+    },
+    {
+      "path": "pages/test/score",
+      "style": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "考试结果"
       }
     }
   ],

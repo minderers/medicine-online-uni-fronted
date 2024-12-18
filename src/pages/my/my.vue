@@ -19,11 +19,11 @@
       编辑个人资料
     </text>
     <view class="container">
-      <text class="name" v-if="userInfo?.nickname || userInfo?.wxOpenId">
+      <text class="name" v-if="userInfo?.nickname">
         {{ userInfo.nickname }}
       </text>
       <text class="identity text-gray-400">(普通用户)</text>
-      <button class="authentication" @click="gotoBindPhone">学员认证</button>
+      <button class="authentication" @click="gotoBindPhone">绑定手机</button>
     </view>
 
     <view class="slogan text-gray-400" v-if="userInfo?.slogan">
@@ -76,33 +76,39 @@
       </view>
 
       <view class="content" @click="gotoAbout">
-        <view class="content">
-          <image
-            src="@/static/profile/icon_about_us.png"
-            mode="scaleToFill"
-            class="ml-30rpx h-5 w-5"
-          />
-          <text class="txt">关于我们</text>
-          <image
-            src="@/static/index/next.png"
-            mode="scaleToFill"
-            class="h-5 w-5 ml-460rpx"
-          />
-        </view>
+        <image
+          src="@/static/profile/icon_about_us.png"
+          mode="scaleToFill"
+          class="ml-30rpx h-5 w-5"
+        />
+        <text class="txt">关于我们</text>
+        <image
+          src="@/static/index/next.png"
+          mode="scaleToFill"
+          class="h-5 w-5 ml-460rpx"
+        />
       </view>
 
-      <view class="content">
+      <view class="content" @tap="toggleShowPopup">
         <image
           src="@/static/profile/icon_about_us.png"
           mode="scaleToFill"
           class="ml-30rpx h-5 w-5"
         />
         <text class="txt">检查更新</text>
+        <text class="version text-gray-400">5.2.5</text>
         <image
           src="@/static/index/next.png"
           mode="scaleToFill"
           class="h-5 w-5 ml-460rpx"
         />
+        <!-- 弹窗条件渲染 -->
+        <uni-popup ref="showPopup" type="center">
+          <view class="popup-content">
+            <text class="word">已经是最新版本喽~</text>
+            <button class="true" @tap="closeShowPopup">确定</button>
+          </view>
+        </uni-popup>
       </view>
     </view>
     <view class="line"></view>
@@ -117,8 +123,9 @@
 <script setup>
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-
 import { onMounted } from "vue";
+import { ref } from "vue";
+import uniPopup from "@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue";
 
 const userStore = useUserStore();
 const { userInfo } = storeToRefs(userStore);
@@ -132,8 +139,17 @@ onMounted(() => {
   userStore.getLoginUserInfo().then(() => {
     console.log("获取后 Pinia 中的 userInfo:", userInfo.value);
   });
-  console.log("-=-=-=-=-=-=", userInfo.value);
 });
+
+// 控制弹窗显示的响应式变量
+const showPopup = ref();
+const toggleShowPopup = () => {
+  showPopup.value.open();
+};
+
+const closeShowPopup = () => {
+  showPopup.value.close();
+};
 
 const gotoUserInfo = () => {
   uni.navigateTo({
@@ -161,13 +177,13 @@ const gotoMyRecord = () => {
 
 const gotoManual = () => {
   uni.navigateTo({
-    url: `/pages/my/manual`,
+    url: `/pages/my/manual?pkId=${encodeURIComponent(0)}`,
   });
 };
 
 const gotoAbout = () => {
   uni.navigateTo({
-    url: `/pages/my/about`,
+    url: `/pages/my/about?pkId=${encodeURIComponent(1)}`,
   });
 };
 </script>
@@ -224,18 +240,18 @@ const gotoAbout = () => {
 }
 .identity {
   font-size: 25rpx;
-  margin-left: 40rpx;
+  margin-left: 30rpx;
   /* margin-right: 10px; 与认证按钮之间的间距 */
 }
 .authentication {
   font-size: 30rpx;
-  background-color: rgb(41, 161, 41);
+  background-color: #00a651;
   color: white;
   /* display: flex;
   justify-content: center;
   align-items: center; */
   border-radius: 10rpx;
-  margin-left: 20rpx;
+  margin-left: 25rpx;
   height: 45rpx;
   width: auto;
   line-height: 45rpx; /* 设置行高与按钮高度相同 */
@@ -256,10 +272,56 @@ const gotoAbout = () => {
 }
 .content {
   margin-top: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-right: 30rpx;
+}
+.ml-30rpx {
+  margin-left: 30rpx;
 }
 .txt {
   margin-left: 30rpx;
 }
+.version {
+  position: absolute;
+  margin-left: 255rpx;
+  font-size: 22rpx;
+}
+
+.popup-content {
+  position: absolute;
+  left: -350rpx;
+  transform: translate(-50%, -50%);
+  width: 550rpx;
+  height: 300rpx;
+  background-color: #ffffff;
+  border-radius: 10rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 垂直居中对齐内容 */
+  justify-content: center; /* 水平居中对齐内容 */
+  padding: 20rpx; /* 内边距 */
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1); /* 阴影效果 */
+}
+
+.word {
+  font-size: 40rpx;
+  color: #333;
+  margin-bottom: 50rpx; /* 文本与按钮之间的间距 */
+}
+
+.true {
+  width: 300rpx;
+  height: 90rpx;
+  background-color: #00a651;
+  color: white;
+  border: none;
+  border-radius: 10rpx;
+  font-size: 32rpx;
+}
+
 .next {
   width: 5rpx;
   height: 5rpx;
