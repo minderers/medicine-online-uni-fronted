@@ -58,7 +58,11 @@
           >
             <navigator :url="'/pages/ask/askDetail?id=' + professor.pkId">
               <view class="avatar-container">
-                <image :src="professor.avatar" class="avatar" />
+                <image
+                  :src="professor.avatar"
+                  mode="aspectFill"
+                  class="avatar"
+                />
               </view>
               <view class="info">
                 <view class="name">{{ professor.name }}</view>

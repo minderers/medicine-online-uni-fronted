@@ -5,6 +5,7 @@
     <view class="professor-info">
       <image
         :src="professor?.avatar"
+        mode="aspectFill"
         class="avatar shadow-md shadow-gray-500"
       ></image>
     </view>

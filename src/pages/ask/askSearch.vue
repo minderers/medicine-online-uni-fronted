@@ -33,14 +33,16 @@
         :key="professor.pkId"
         class="professor-item border-1 border-solid border-gray-300 rounded-lg"
       >
-        <view class="avatar-container">
-          <image :src="professor.avatar" class="avatar" />
-        </view>
-        <view class="info">
-          <view class="name">{{ professor.name }}</view>
-          <view class="brief">{{ professor.brief }}</view>
-          <view class="major-field">{{ professor.majorField }}</view>
-        </view>
+        <navigator :url="'/pages/ask/askDetail?id=' + professor.pkId">
+          <view class="avatar-container">
+            <image :src="professor.avatar" class="avatar" />
+          </view>
+          <view class="info">
+            <view class="name">{{ professor.name }}</view>
+            <view class="brief">{{ professor.brief }}</view>
+            <view class="major-field">{{ professor.majorField }}</view>
+          </view>
+        </navigator>
       </view>
     </view>
   </view>
