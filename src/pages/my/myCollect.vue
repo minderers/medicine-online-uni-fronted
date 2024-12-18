@@ -1,7 +1,12 @@
 <template>
   <Back><slot>我的收藏</slot></Back>
   <div class="collect-list">
-    <div v-for="item in starList" :key="item.pkId" class="collect-item">
+    <div
+      v-for="item in starList"
+      :key="item.pkId"
+      class="collect-item"
+      @click="toDetail(item)"
+    >
       <!-- 使用 getFullImageUrl 处理图片地址 -->
       <img
         v-if="item.info?.cover || item.info2?.cover"
@@ -17,16 +22,26 @@
 
         <div class="bottom-info">
           <!-- 标签 -->
-          <span class="label">{{ item.info?.label || item.info2?.label }}</span>
+          <span class="label" :style="getRandomColor(item.pkId)">
+            {{ item.info?.label || item.info2?.label }}
+          </span>
 
           <!-- 浏览量和收藏数 -->
           <div class="stats">
             <span class="views">
-              <i class="icon-eye"></i>
+              <image
+                src="../../static/index/icon_chakan.png"
+                mode="scaleToFill"
+                class="stats-icon"
+              />
               {{ item.info?.browseNum || item.info2?.browseNum }}
             </span>
             <span class="stars">
-              <i class="icon-star"></i>
+              <image
+                src="../../static/index/icon_selectedshoucang.png"
+                mode="scaleToFill"
+                class="stats-icon"
+              />
               {{ item.info?.starNum || item.info2?.starNum }}
             </span>
           </div>
@@ -49,6 +64,16 @@ const getFullImageUrl = (url) => {
   return url.startsWith("http")
     ? url
     : `https://medicineonline.oss-cn-hangzhou.aliyuncs.com/${url.trim()}`;
+};
+
+// 添加随机颜色方法
+const getRandomColor = (index) => {
+  const colors = ["#f5a623", "#4a90e2", "#50e3c2", "#ff5858", "#bd10e0"];
+  const color = colors[index % colors.length];
+  return {
+    borderColor: color,
+    color: color,
+  };
 };
 
 const fetchStarList = async () => {
@@ -80,6 +105,76 @@ const fetchStarList = async () => {
   }
 };
 
+// 添加跳转详情方法
+const toDetail = (item) => {
+  // 将数字类型映射到对应的路由
+  const typeMap = {
+    0: {
+      route: "/pages/index/banner-msg",
+      type: "special",
+    },
+    1: {
+      route: "/pages/index/NewsDetail",
+      type: "article",
+    },
+    2: {
+      route: "/pages/index/ResourceDetail",
+      type: "video",
+    },
+    3: {
+      route: "/pages/index/podcastDetail",
+      type: "podcast",
+    },
+  };
+
+  const typeInfo = typeMap[item.type];
+  if (!typeInfo) {
+    console.error("未知内容类型:", item.type);
+    uni.showToast({
+      title: "未知内容类型",
+      icon: "none",
+    });
+    return;
+  }
+
+  // 构造跳转参数
+  const params = {
+    pkId: item.contentId,
+    title: item.info?.title || item.info2?.title,
+    browseNum: item.info?.browseNum || item.info2?.browseNum,
+    starNum: item.info?.starNum || item.info2?.starNum,
+  };
+
+  // 如果是音频类型，额外添加封面参数
+  if (item.type === 2) {
+    // 音频类型
+    params.cover = item.info?.cover || item.info2?.cover;
+  }
+
+  // 构造URL参数字符串
+  const queryString = Object.entries(params)
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .join("&");
+
+  console.log("跳转信息:", {
+    type: item.type,
+    typeInfo,
+    url: `${typeInfo.route}?${queryString}`,
+  });
+
+  // 跳转到详情页
+  uni.navigateTo({
+    url: `${typeInfo.route}?${queryString}`,
+    fail: (err) => {
+      console.error("页面跳转失败:", err);
+      uni.showToast({
+        title: "页面跳转失败",
+        icon: "none",
+      });
+    },
+  });
+};
+
 onMounted(() => {
   fetchStarList();
 });
@@ -94,6 +189,11 @@ onMounted(() => {
   display: flex;
   padding: 16px 0;
   border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+}
+
+.collect-item:active {
+  background-color: #f5f5f5;
 }
 
 .cover-image {
@@ -131,10 +231,10 @@ onMounted(() => {
 
 .label {
   font-size: 12px;
-  color: #999;
   padding: 2px 6px;
-  background-color: #f5f5f5;
-  border-radius: 2px;
+  background-color: transparent;
+  border-radius: 5px;
+  border: 1px solid;
 }
 
 .stats {
@@ -149,6 +249,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
   margin-left: 12px;
+  line-height: 1;
+}
+
+.stats-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
 }
 
 .icon-eye,
