@@ -189,6 +189,14 @@
       }
     },
     {
+      "path": "pages/ask/reply",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "回复问题"
+      }
+    },
+    {
       "path": "pages/my/userInfo/userInfo",
       "style": {
         "navigationBarTextStyle": "white",

@@ -56,26 +56,74 @@ export const getTopicListById = (id) => {
 // 向专家提问
 export const addTopic = (professorId, content, imgFiles) => {
   return new Promise((resolve, reject) => {
-    const apiUrl = "/professor/insert"; // 不需要完整 URL，由拦截器处理
-    const formData = {
-      professorId: professorId,
-      content: content,
-    };
+    const apiUrl = "/professor/insert";
+    const token = uni.getStorageSync("token");
 
+    // 如果没有图片文件，使用普通请求
+    if (!imgFiles || imgFiles.length === 0) {
+      return http({
+        method: "POST",
+        url: apiUrl,
+        header: {
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        data: {
+          professorId: String(professorId),
+          content: content,
+        },
+      })
+        .then((response) => {
+          if (response.code === 0) {
+            uni.showToast({
+              title: "提交成功",
+              icon: "success",
+            });
+            setTimeout(() => {
+              const pages = getCurrentPages();
+              const prevPage = pages[pages.length - 2];
+              if (prevPage && prevPage.$vm.getProfessorInfo) {
+                prevPage.$vm.getProfessorInfo();
+              }
+              uni.navigateBack();
+            }, 1500);
+          }
+          resolve(response);
+        })
+        .catch(reject);
+    }
+
+    // 处理图片上传
     let uploadTasks = [];
-
     imgFiles.forEach((filePath, index) => {
       const uploadTask = uni.uploadFile({
-        url: apiUrl,
+        url: import.meta.env.VITE_API_URL + apiUrl,
         filePath: filePath,
         name: "imgFile",
+        header: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
         formData: {
-          ...formData,
-          fileIndex: index.toString(), // 添加文件索引以便后端识别
+          professorId: String(professorId),
+          content: content,
+          fileIndex: String(index),
         },
         success: (uploadRes) => {
           try {
             const response = JSON.parse(uploadRes.data);
+            if (response.code === 0) {
+              uni.showToast({
+                title: "提交成功",
+                icon: "success",
+              });
+              setTimeout(() => {
+                const pages = getCurrentPages();
+                const prevPage = pages[pages.length - 2];
+                if (prevPage && prevPage.$vm.getProfessorInfo) {
+                  prevPage.$vm.getProfessorInfo();
+                }
+                uni.navigateBack();
+              }, 1500);
+            }
             resolve(response);
           } catch (e) {
             reject(new Error("解析响应失败"));
@@ -85,20 +133,8 @@ export const addTopic = (professorId, content, imgFiles) => {
           reject(err);
         },
       });
-
       uploadTasks.push(uploadTask);
     });
-
-    if (uploadTasks.length === 0) {
-      // 如果没有文件，则直接发送请求
-      http({
-        method: "POST",
-        url: apiUrl,
-        data: formData,
-      })
-        .then(resolve)
-        .catch(reject);
-    }
   });
 };
 
@@ -123,5 +159,63 @@ export const getTopicById = (id) => {
   return http({
     method: "POST",
     url: "/professor/topic/" + id,
+  });
+};
+
+/**
+ * 回复
+ */
+export const addReply = (topicId, content, imgFiles) => {
+  return new Promise((resolve, reject) => {
+    const apiUrl = "/professor/reply";
+
+    // 如果没有图片文件，使用 uni.request 发送普通请求
+    if (!imgFiles || imgFiles.length === 0) {
+      uni.request({
+        url: apiUrl,
+        method: "POST",
+        header: {
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        data: {
+          topicId: String(topicId),
+          content: content,
+        },
+        success: (res) => {
+          resolve(res.data);
+        },
+        fail: (err) => {
+          reject(err);
+        },
+      });
+      return;
+    }
+
+    // 处理图片上传
+    let uploadTasks = [];
+    imgFiles.forEach((filePath, index) => {
+      const uploadTask = uni.uploadFile({
+        url: apiUrl,
+        filePath: filePath,
+        name: "imgFile",
+        formData: {
+          topicId: String(topicId),
+          content: content,
+          fileIndex: String(index),
+        },
+        success: (uploadRes) => {
+          try {
+            const response = JSON.parse(uploadRes.data);
+            resolve(response);
+          } catch (e) {
+            reject(new Error("解析响应失败"));
+          }
+        },
+        fail: (err) => {
+          reject(err);
+        },
+      });
+      uploadTasks.push(uploadTask);
+    });
   });
 };

@@ -113,7 +113,10 @@ const props = defineProps({
 const getProfessorInfo = async () => {
   const res = await getProfessorById(props.id);
   if (res.code === 0) {
-    professor.value = res.data;
+    professor.value = {
+      ...res.data,
+      list: res.data.list?.slice(0, 3),
+    };
   }
 };
 
