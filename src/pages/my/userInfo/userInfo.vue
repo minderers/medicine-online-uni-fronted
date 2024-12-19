@@ -5,14 +5,12 @@
     <view class="user-info ml-30rpx">
       <view class="content">
         <text class="left">头像</text>
-        <text class="right" @tap="onAvatarChange"> </text>
-        <!-- <view class="img">
-              <image :src="myUserInfo.avatar" mode="aspectFill" />
-            </view> -->
+        <text class="right"></text>
         <image
-          src="@/static/images/avatar.jpg"
-          mode="scaleToFill"
+          :src="myUserInfo.avatar"
+          mode="aspectFill"
           class="avatar"
+          @tap="onAvatarChange"
         />
         <image
           src="@/static/index/next.png"
@@ -24,7 +22,18 @@
 
       <view class="content">
         <text class="left">性别</text>
-        <text class="gender" @tap="onGenderChange"> 女 </text>
+        <text class="sex" @tap="toggleSexPopup">{{
+          myUserInfo.sex === 0 ? "男" : "女"
+        }}</text>
+
+        <uni-popup ref="sexPopup" type="bottom" background-color="#fff">
+          <view class="sexPopup">
+            <button @tap="selectSex(0)">男</button>
+            <button @tap="selectSex(1)">女</button>
+            <button @tap="closeSexPopup">取消</button>
+          </view>
+        </uni-popup>
+
         <image
           src="@/static/index/next.png"
           mode="scaleToFill"
@@ -35,10 +44,14 @@
 
       <view class="content">
         <text class="left">昵称</text>
-        <!-- <text class="right"> -->
-        <input type="text" placeholder="请输入昵称(10字以内)" maxlength="10" />
-        <!-- <text class="txt">{{ userInfo.nickname }}</text> -->
-        <!-- </text> -->
+        <input
+          v-if="userInfo?.nickname"
+          type="text"
+          placeholder="请输入昵称(10字以内)"
+          maxlength="10"
+          v-model="userInfo.nickname"
+          @input="onNickNameChange"
+        />
         <image
           src="@/static/index/next.png"
           mode="scaleToFill"
@@ -49,8 +62,8 @@
 
       <view class="content">
         <text class="left">电话</text>
-        <text class="right">
-          15961520129
+        <text class="right" v-if="userInfo?.phone">
+          {{ userInfo.phone }}
           <!-- <text class="txt">{{ userInfo.phone }}</text> -->
         </text>
       </view>
@@ -67,8 +80,14 @@
 
       <view class="content">
         <text class="left">口号</text>
-        <input type="text" placeholder="请输入口号(15字以内)" maxlength="15" />
-        <!-- <text class="txt">{{ userInfo.slogan }}</text> -->
+        <input
+          v-if="userInfo?.slogan"
+          type="text"
+          placeholder="请输入口号(15字以内)"
+          maxlength="15"
+          v-model="userInfo.slogan"
+          @input="onSloganChange"
+        />
         <image
           src="@/static/index/next.png"
           mode="scaleToFill"
@@ -80,21 +99,27 @@
 
     <view class="position">
       <view class="button-container">
-        <button class="save-button">保存</button>
-        <!-- <button class="logout-button" @tap="handleQuitClick">退出登录</button> -->
-        <button class="logout-button">退出登录</button>
+        <button class="save-button" @tap="handleSubmit">保存</button>
+        <button
+          class="logout-button"
+          v-if="userStore.userInfo"
+          @tap="handleQuitClick"
+        >
+          退出登录
+        </button>
       </view>
     </view>
   </view>
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import Back from "@/components/back.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-// import { logout } from "@/service/user";
+import { logout, updateUserInfo } from "@/service/user";
+import uniPopup from "@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue";
 
 const userStore = useUserStore();
 const { userInfo } = storeToRefs(userStore);
@@ -108,59 +133,145 @@ onLoad(() => {
 const myUserInfo = reactive({
   pkId: 0,
   avatar: "",
-  // gender: 0, // ??
-  nickname: "mxy",
-  phone: "15961520129",
-  slogan: "健康",
+  sex: 0,
+  nickname: "",
+  phone: "",
+  slogan: "",
 });
 
-// 打开修改头像
-const onAvatarChange = () => {};
+// 修改头像
+const onAvatarChange = () => {
+  uni.chooseMedia({
+    // 文件个数
+    count: 1,
+    // 文件类型
+    mediaType: ["image"],
+    success: (res) => {
+      // 本地路径
+      const { tempFilePath } = res.tempFiles[0];
+      // 上传
+      uploadFile(tempFilePath);
+    },
+  });
+};
+// ⽂件上传-兼容⼩程序端、H5端、App端
+const uploadFile = (file) => {
+  // ⽂件上传
+  uni.uploadFile({
+    url: "/common/upload/img",
+    name: "file", // 后端数据字段名
+    filePath: file, // 新头像
+    success: (res) => {
+      // 判断状态码是否上传成功
+      if (res.statusCode === 200) {
+        // console.log(res.data)
+        // 头像
+        const url = JSON.parse(res.data).data;
+        console.log(url);
+        // 当前⻚⾯更新头像
+        myUserInfo.avatar = url;
+        // 更新 Store 头像
+        userStore.userInfo.avatar = url;
+        uni.showToast({ icon: "success", title: "更新成功" });
+      } else {
+        uni.showToast({ icon: "error", title: "出现错误" });
+      }
+    },
+  });
+};
 
-// 打开修改性别
-const onGenderChange = () => {};
+const sexPopup = ref();
+// 切换性别弹窗的显示
+const toggleSexPopup = () => {
+  sexPopup.value.open();
+};
+
+// 关闭性别弹窗
+const closeSexPopup = () => {
+  sexPopup.value.close();
+};
+
+// 选择性别
+const selectSex = (sex) => {
+  myUserInfo.sex = sex;
+  userStore.userInfo.sex = sex; // 更新 Pinia 中的 userInfo
+  // 这里添加更新数据库的逻辑
+  closeSexPopup();
+};
 
 // 打开修改昵称
-const onNickNameChange = () => {};
+const onNickNameChange = (e) => {
+  const inputValue = e.target.value.trim();
+  myUserInfo.nickname = inputValue;
+  userStore.userInfo.nickname = inputValue;
+};
 
-// 打开修改电话
-const onPhoneChange = () => {};
+// 修改口号
+const onSloganChange = (e) => {
+  const inputValue = e.target.value.trim(); // 获取输入值并去除前后空格
+  // if (inputValue.length > 10) {
+  //   uni.showToast({
+  //     title: "昵称长度不能超过15个字",
+  //     icon: "none",
+  //   });
+  //   return;
+  // }
+  myUserInfo.slogan = inputValue;
+  userStore.userInfo.slogan = inputValue;
+};
 
-// 打开修改口号
-const onSloganChange = () => {};
+// 提交表单
+const handleSubmit = async () => {
+  const res = await updateUserInfo(myUserInfo);
+  if (res.code === 0) {
+    uni.showToast({
+      title: "修改成功",
+    });
+    userStore.setUserInfo(res.data);
+    setTimeout(() => {
+      uni.navigateBack({ delta: 1 });
+    }, 1000);
+  } else {
+    uni.showToast({
+      title: "修改失败",
+      icon: "none",
+    });
+  }
+};
 
-// const handleQuitClick = () => {
-//   uni.showModal({
-//     title: "是否退出",
-//     success: async (res) => {
-//       if (res.confirm) {
-//         const res = await logout();
-//         if (res.code === 0) {
-//           // 清除用户信息
-//           userStore.clearUserInfo();
-//           // 清除token
-//           uni.removeStorageSync("token");
-//           uni.showToast({
-//             title: "操作成功",
-//           });
-//           uni.reLaunch({
-//             url: "/pages/login/login",
-//           });
-//         }
-//       }
-//     },
-//   });
-// };
+// 退出登录
+const handleQuitClick = () => {
+  uni.showModal({
+    title: "是否退出",
+    success: async (res) => {
+      if (res.confirm) {
+        const res = await logout();
+        if (res.code === 0) {
+          // 清除用户信息
+          userStore.clearUserInfo();
+          // 清除token
+          uni.removeStorageSync("token");
+          uni.showToast({
+            title: "操作成功",
+          });
+          uni.reLaunch({
+            url: "/pages/login/login",
+          });
+        }
+      }
+    },
+  });
+};
 </script>
 
 <style lang="scss" scoped>
 .userInfoPage {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: calc(100vh - 200rpx);
 }
 .content {
-  margin-top: 45rpx;
+  margin-top: 40rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -183,7 +294,7 @@ const onSloganChange = () => {};
     // right: 100rpx; /* 距离右边80rpx */
     // margin-right: 50rpx;
   }
-  .gender {
+  .sex {
     font-size: 36rpx;
     color: gray;
     right: 100rpx;
@@ -252,5 +363,32 @@ const onSloganChange = () => {};
   font-size: 35rpx;
   flex: 1; // 按钮占据可用空间的1份
   height: 80rpx;
+}
+.sexPopup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rpx;
+  button {
+    margin: 5rpx;
+    padding: 5rpx;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 20rpx;
+    font-size: 42rpx;
+    width: 400rpx;
+    height: 150rpx;
+  }
+}
+.custom-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20rpx;
+}
+.sexPopup button:hover {
+  background-color: #e0e0e0;
 }
 </style>

@@ -78,7 +78,8 @@
     "@uni-helper/uni-types": "^1.0.0-alpha.6",
     "@vue/runtime-core": "3.4.21",
     "miniprogram-api-typings": "^4.0.2",
-    "sass": "^1.64.2",
+    "sass": "^1.83.0",
+    "sass-loader": "^16.0.4",
     "vite": "5.2.8",
     "vite-plugin-windicss": "^1.9.3",
     "windicss": "^3.5.6"

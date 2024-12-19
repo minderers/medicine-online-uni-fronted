@@ -3,56 +3,36 @@
     <image
       src="@/static/profile/bg.png"
       mode="aspectFill"
-      class="left-0 top-0 w-full h-400rpx z-[-1]"
+      class="left-0 top-0 w-full h-400rpx"
     ></image>
   </view>
 
-  <!-- class="img overflow-hidden rounded-full shadow-md"
-      > -->
-  <!-- <image :src="myUserInfo.avatar" mode="aspectFill" /> -->
   <view class="bg">
     <image
-      src="@/static/images/avatar.jpg"
-      mode="scaleToFill"
+      v-if="userInfo"
+      :src="userInfo.avatar"
+      mode="aspectFill"
       class="avatar-img"
       @click="gotoUserInfo"
-    ></image>
-    <!-- <image
-          :src="`https://mxy-u.oss-cn-nanjing.aliyuncs.com/images/10.jpg`"
-          mode="aspectFit"
-          class="avatar"
-          style="
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-          "
-        /> -->
-
+    />
     <text class="userInfo text-gray-400" @click="gotoUserInfo">
       编辑个人资料
     </text>
     <view class="container">
-      <!-- <view class="name" v-if="userInfo?.nickname || userInfo?.wxOpenId"> -->
-      <text class="name"> <!-- {{ userInfo.nickname }} -->用户名 </text>
+      <text class="name" v-if="userInfo?.nickname">
+        {{ userInfo.nickname }}
+      </text>
       <text class="identity text-gray-400">(普通用户)</text>
-      <button class="authentication" @click="gotoBindPhone">学员认证</button>
+      <button class="authentication" @click="gotoBindPhone">绑定手机</button>
     </view>
 
-    <!-- <view class="slogan" v-if="userInfo?.slogan || userInfo?.slogan"> -->
-    <view class="slogan text-gray-400">
-      学习口号：<!-- {{ userInfo.slogan }} -->
+    <view class="slogan text-gray-400" v-if="userInfo?.slogan">
+      学习口号：{{ userInfo.slogan }}
     </view>
-    <!-- <view class="noLogin" v-else>暂未登录</view> -->
-
-    <!-- <navigator url="./userInfo/userInfo" class="right">
-      <uniIcons class="icon" type="right" size="20" color="#000"></uniIcons>
-    </navigator> -->
 
     <!-- 操作 -->
     <!-- <view class="action-info" v-if="userInfo"> -->
     <view class="action-info mt-30rpx">
-      <!-- <navigation class="row" url="/pages/my/myResource?type=2"> -->
       <view class="content" @click="gotoMyCollect">
         <image
           src="@/static/profile/icon_wodeshoucang.png"
@@ -66,9 +46,7 @@
           class="h-5 w-5 ml-460rpx"
         />
       </view>
-      <!-- </navigation> -->
 
-      <!-- <navigation class="row" url="/pages/my/myResource?type=2"> -->
       <view class="content" @click="gotoMyRecord">
         <image
           src="@/static/profile/icon_xuexilishi.png"
@@ -82,9 +60,7 @@
           class="h-5 w-5 ml-460rpx"
         />
       </view>
-      <!-- </navigation> -->
 
-      <!-- <navigation class="row" url="/pages/my/myResource?type=2"> -->
       <view class="content" @click="gotoManual">
         <image
           src="@/static/profile/icon_shiyongshouce.png"
@@ -98,41 +74,42 @@
           class="h-5 w-5 ml-460rpx"
         />
       </view>
-      <!-- </navigation> -->
 
-      <!-- <navigation class="row" url="/pages/my/myResource?type=2"> -->
       <view class="content" @click="gotoAbout">
-        <view class="content">
-          <image
-            src="@/static/profile/icon_about_us.png"
-            mode="scaleToFill"
-            class="ml-30rpx h-5 w-5"
-          />
-          <text class="txt">关于我们</text>
-          <image
-            src="@/static/index/next.png"
-            mode="scaleToFill"
-            class="h-5 w-5 ml-460rpx"
-          />
-        </view>
-      </view>
-      <!-- </navigation> -->
-
-      <!-- <navigation class="row" url="/pages/my/myResource?type=2"> -->
-      <view class="content">
         <image
           src="@/static/profile/icon_about_us.png"
           mode="scaleToFill"
           class="ml-30rpx h-5 w-5"
         />
-        <text class="txt">检查更新</text>
+        <text class="txt">关于我们</text>
         <image
           src="@/static/index/next.png"
           mode="scaleToFill"
           class="h-5 w-5 ml-460rpx"
         />
       </view>
-      <!-- </navigation> -->
+
+      <view class="content" @tap="toggleShowPopup">
+        <image
+          src="@/static/profile/icon_about_us.png"
+          mode="scaleToFill"
+          class="ml-30rpx h-5 w-5"
+        />
+        <text class="txt">检查更新</text>
+        <text class="version text-gray-400">5.2.5</text>
+        <image
+          src="@/static/index/next.png"
+          mode="scaleToFill"
+          class="h-5 w-5 ml-460rpx"
+        />
+        <!-- 弹窗条件渲染 -->
+        <uni-popup ref="showPopup" type="center">
+          <view class="popup-content">
+            <text class="word">已经是最新版本喽~</text>
+            <button class="true" @tap="closeShowPopup">确定</button>
+          </view>
+        </uni-popup>
+      </view>
     </view>
     <view class="line"></view>
 
@@ -146,9 +123,33 @@
 <script setup>
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { onMounted } from "vue";
+import { ref } from "vue";
+import uniPopup from "@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue";
 
 const userStore = useUserStore();
 const { userInfo } = storeToRefs(userStore);
+
+// 可以在这里通过控制台打印等方式查看 userInfo 的值
+onMounted(() => {
+  console.log("当前 Pinia 中的 userInfo:", userInfo.value);
+  // console.log("当前 Pinia 中的 userInfo:", userInfo.nickname);
+  // console.log("当前 Pinia 中的 userInfo:", userInfo.value.nickname);
+  // 或者调用获取用户信息的方法，等待获取后再查看（假设获取是异步的）
+  userStore.getLoginUserInfo().then(() => {
+    console.log("获取后 Pinia 中的 userInfo:", userInfo.value);
+  });
+});
+
+// 控制弹窗显示的响应式变量
+const showPopup = ref();
+const toggleShowPopup = () => {
+  showPopup.value.open();
+};
+
+const closeShowPopup = () => {
+  showPopup.value.close();
+};
 
 const gotoUserInfo = () => {
   uni.navigateTo({
@@ -176,13 +177,13 @@ const gotoMyRecord = () => {
 
 const gotoManual = () => {
   uni.navigateTo({
-    url: `/pages/my/manual`,
+    url: `/pages/my/manual?pkId=${encodeURIComponent(0)}`,
   });
 };
 
 const gotoAbout = () => {
   uni.navigateTo({
-    url: `/pages/my/about`,
+    url: `/pages/my/about?pkId=${encodeURIComponent(1)}`,
   });
 };
 </script>
@@ -239,18 +240,18 @@ const gotoAbout = () => {
 }
 .identity {
   font-size: 25rpx;
-  margin-left: 40rpx;
+  margin-left: 30rpx;
   /* margin-right: 10px; 与认证按钮之间的间距 */
 }
 .authentication {
   font-size: 30rpx;
-  background-color: rgb(41, 161, 41);
+  background-color: #00a651;
   color: white;
   /* display: flex;
   justify-content: center;
   align-items: center; */
   border-radius: 10rpx;
-  margin-left: 20rpx;
+  margin-left: 25rpx;
   height: 45rpx;
   width: auto;
   line-height: 45rpx; /* 设置行高与按钮高度相同 */
@@ -271,10 +272,56 @@ const gotoAbout = () => {
 }
 .content {
   margin-top: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-right: 30rpx;
+}
+.ml-30rpx {
+  margin-left: 30rpx;
 }
 .txt {
   margin-left: 30rpx;
 }
+.version {
+  position: absolute;
+  margin-left: 255rpx;
+  font-size: 22rpx;
+}
+
+.popup-content {
+  position: absolute;
+  left: -350rpx;
+  transform: translate(-50%, -50%);
+  width: 550rpx;
+  height: 300rpx;
+  background-color: #ffffff;
+  border-radius: 10rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 垂直居中对齐内容 */
+  justify-content: center; /* 水平居中对齐内容 */
+  padding: 20rpx; /* 内边距 */
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.1); /* 阴影效果 */
+}
+
+.word {
+  font-size: 40rpx;
+  color: #333;
+  margin-bottom: 50rpx; /* 文本与按钮之间的间距 */
+}
+
+.true {
+  width: 300rpx;
+  height: 90rpx;
+  background-color: #00a651;
+  color: white;
+  border: none;
+  border-radius: 10rpx;
+  font-size: 32rpx;
+}
+
 .next {
   width: 5rpx;
   height: 5rpx;
