@@ -338,9 +338,9 @@ const toDetail = (item) => {
       uni.navigateTo({
         url: `/pages/index/banner-msg?pkId=${encodeURIComponent(
           item.pkId
-        )}&cover=${encodeURIComponent(item.cover)}&brief=${encodeURIComponent(
-          item.brief
-        )}&claim=${encodeURIComponent(item.claim)}`,
+        )}&cover=${encodeURIComponent(item.cover)}&title=${encodeURIComponent(
+          item.title
+        )}`,
       });
       break;
     case 2: // 新闻
