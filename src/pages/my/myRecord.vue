@@ -255,10 +255,10 @@ onReachBottom(() => getRecordList());
   padding: 20rpx 0;
 }
 .clear-btn {
-  position: absolute;
+  position: fixed;
   right: 30rpx;
   bottom: 50rpx;
-  padding: 10rpx 20rpx;
+  padding: 20rpx 30rpx;
   background-color: #f2f2f2;
   color: #666;
   border-radius: 25rpx;

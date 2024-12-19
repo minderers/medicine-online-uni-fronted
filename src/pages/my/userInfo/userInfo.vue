@@ -22,23 +22,16 @@
 
       <view class="content">
         <text class="left">性别</text>
-        <text class="sex" @tap="toggleSexPopup">{{
-          myUserInfo.sex === 0 ? "男" : "女"
-        }}</text>
-
-        <uni-popup ref="sexPopup" type="bottom" background-color="#fff">
-          <view class="sexPopup">
-            <button @tap="selectSex(0)">男</button>
-            <button @tap="selectSex(1)">女</button>
-            <button @tap="closeSexPopup">取消</button>
-          </view>
-        </uni-popup>
-
-        <image
-          src="@/static/index/next.png"
-          mode="scaleToFill"
-          class="h-5 w-5 next"
-        />
+        <view class="radio-group">
+          <radio-group @change="selectSex">
+            <label class="radio-label">
+              <radio value="0" :checked="myUserInfo.sex === 0" />男
+            </label>
+            <label class="radio-label">
+              <radio value="1" :checked="myUserInfo.sex === 1" />女
+            </label>
+          </radio-group>
+        </view>
       </view>
       <view class="line" />
 
@@ -72,7 +65,7 @@
       <view class="content">
         <text class="left">身份</text>
         <text class="right">
-          普通用户
+          学员
           <!-- <text class="txt">{{ userInfo.nickname }}</text> -->
         </text>
       </view>
@@ -119,7 +112,6 @@ import Back from "@/components/back.vue";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { logout, updateUserInfo } from "@/service/user";
-import uniPopup from "@dcloudio/uni-ui/lib/uni-popup/uni-popup.vue";
 
 const userStore = useUserStore();
 const { userInfo } = storeToRefs(userStore);
@@ -162,41 +154,33 @@ const uploadFile = (file) => {
     name: "file", // 后端数据字段名
     filePath: file, // 新头像
     success: (res) => {
+      // 解析响应数据
+      const response = JSON.parse(res.data);
       // 判断状态码是否上传成功
-      if (res.statusCode === 200) {
-        // console.log(res.data)
-        // 头像
-        const url = JSON.parse(res.data).data;
-        console.log(url);
+      if (response.code === 0) {
+        // 头像URL
+        const url = response.data;
         // 当前⻚⾯更新头像
         myUserInfo.avatar = url;
         // 更新 Store 头像
         userStore.userInfo.avatar = url;
         uni.showToast({ icon: "success", title: "更新成功" });
       } else {
-        uni.showToast({ icon: "error", title: "出现错误" });
+        uni.showToast({ icon: "error", title: response.msg || "上传失败" });
       }
+    },
+    fail: (err) => {
+      uni.showToast({ icon: "error", title: "上传失败" });
+      console.error("Upload failed:", err);
     },
   });
 };
 
-const sexPopup = ref();
-// 切换性别弹窗的显示
-const toggleSexPopup = () => {
-  sexPopup.value.open();
-};
-
-// 关闭性别弹窗
-const closeSexPopup = () => {
-  sexPopup.value.close();
-};
-
-// 选择性别
-const selectSex = (sex) => {
+// 修改选择性别的方法
+const selectSex = (e) => {
+  const sex = parseInt(e.detail.value);
   myUserInfo.sex = sex;
-  userStore.userInfo.sex = sex; // 更新 Pinia 中的 userInfo
-  // 这里添加更新数据库的逻辑
-  closeSexPopup();
+  userStore.userInfo.sex = sex;
 };
 
 // 打开修改昵称
@@ -364,31 +348,14 @@ const handleQuitClick = () => {
   flex: 1; // 按钮占据可用空间的1份
   height: 80rpx;
 }
-.sexPopup {
+.radio-group {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 5rpx;
-  button {
-    margin: 5rpx;
-    padding: 5rpx;
-    background-color: #ffffff;
-    border: none;
-    border-radius: 20rpx;
-    font-size: 42rpx;
-    width: 400rpx;
-    height: 150rpx;
-  }
 }
-.custom-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 20rpx;
-}
-.sexPopup button:hover {
-  background-color: #e0e0e0;
+
+.radio-label {
+  margin-left: 20rpx;
+  font-size: 32rpx;
+  color: #333;
 }
 </style>
