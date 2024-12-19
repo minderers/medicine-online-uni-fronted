@@ -91,10 +91,10 @@ const feedback = ref({
 
 const showPopup = ref(false);
 const list = ref([
-  { id: 0, name: "类别1" },
-  { id: 1, name: "类别2" },
-  { id: 2, name: "类别3" },
-  { id: 3, name: "类别4" }, // 假设有四个类别
+  { id: 0, name: "产品问题与崩溃" },
+  { id: 1, name: "系统数据异常" },
+  { id: 2, name: "视频资源授权" },
+  { id: 3, name: "试题考卷相关" }, // 假设有四个类别
 ]);
 
 const image = ref(null);
