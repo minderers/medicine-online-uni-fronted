@@ -1,6 +1,6 @@
 import { useUserStore } from "@/stores/user";
 // 这里也可以根据实际情况修改成线上接口地址
-const baseURL = "http://localhost:8080/medicine-online-client-backend";
+const baseURL = "http://47.99.65.19:8080/medicine-online-client-backend";
 
 export const http = (options) => {
   // 1. 返回 Promise 对象

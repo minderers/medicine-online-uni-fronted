@@ -57,13 +57,12 @@ export const getTopicListById = (id) => {
 export const addTopic = (professorId, content, imgFiles) => {
   return new Promise((resolve, reject) => {
     const apiUrl = "/professor/insert";
-    const token = uni.getStorageSync("token");
 
     // 如果没有图片文件，使用普通请求
     if (!imgFiles || imgFiles.length === 0) {
-      return http({
-        method: "POST",
+      return uni.request({
         url: apiUrl,
+        method: "POST",
         header: {
           "content-type": "application/x-www-form-urlencoded",
         },
@@ -71,37 +70,22 @@ export const addTopic = (professorId, content, imgFiles) => {
           professorId: String(professorId),
           content: content,
         },
-      })
-        .then((response) => {
-          if (response.code === 0) {
-            uni.showToast({
-              title: "提交成功",
-              icon: "success",
-            });
-            setTimeout(() => {
-              const pages = getCurrentPages();
-              const prevPage = pages[pages.length - 2];
-              if (prevPage && prevPage.$vm.getProfessorInfo) {
-                prevPage.$vm.getProfessorInfo();
-              }
-              uni.navigateBack();
-            }, 1500);
-          }
-          resolve(response);
-        })
-        .catch(reject);
+        success: (res) => {
+          resolve(res.data);
+        },
+        fail: (err) => {
+          reject(err);
+        },
+      });
     }
 
     // 处理图片上传
     let uploadTasks = [];
     imgFiles.forEach((filePath, index) => {
       const uploadTask = uni.uploadFile({
-        url: import.meta.env.VITE_API_URL + apiUrl,
+        url: apiUrl,
         filePath: filePath,
         name: "imgFile",
-        header: {
-          Authorization: token ? `Bearer ${token}` : "",
-        },
         formData: {
           professorId: String(professorId),
           content: content,
@@ -110,20 +94,6 @@ export const addTopic = (professorId, content, imgFiles) => {
         success: (uploadRes) => {
           try {
             const response = JSON.parse(uploadRes.data);
-            if (response.code === 0) {
-              uni.showToast({
-                title: "提交成功",
-                icon: "success",
-              });
-              setTimeout(() => {
-                const pages = getCurrentPages();
-                const prevPage = pages[pages.length - 2];
-                if (prevPage && prevPage.$vm.getProfessorInfo) {
-                  prevPage.$vm.getProfessorInfo();
-                }
-                uni.navigateBack();
-              }, 1500);
-            }
             resolve(response);
           } catch (e) {
             reject(new Error("解析响应失败"));

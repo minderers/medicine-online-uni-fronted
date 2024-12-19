@@ -13,7 +13,7 @@
       <input
         v-model="searchTitle"
         placeholder="输入关键字搜索"
-        @keydown.enter="handleSearch"
+        @confirm="handleSearch"
         style="
           color: black;
           border: none;
@@ -55,7 +55,6 @@
         class="search-result-item"
       >
         <view v-if="result.leixing === 1" class="leixing1">
-
           <image :src="result.cover" mode="scaleToFill" class="subject-img" />
           <text class="mx-2" style="font-size: 35rpx">{{ result.title }}</text>
 
