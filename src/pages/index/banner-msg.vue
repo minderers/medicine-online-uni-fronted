@@ -8,7 +8,7 @@
       class="mt-2 indent-lg px-4 pb-2"
       :class="{ 'clamp-text': !isExpanded }"
     >
-      <text class="content experience">{{ brief }}</text>
+      <text class="content experience">{{ brief || title }}</text>
     </view>
     <view class="flex justify-center" @click="toggleExpand">
       <image
@@ -28,7 +28,7 @@
     </div>
     <div class="ml-2 title">学习要求</div>
   </div>
-  <div class="claim mx-3 pb-2 border-bottom">{{ claim }}</div>
+  <div class="claim mx-3 pb-2 border-bottom">{{ claim || title }}</div>
   <div class="book border-bottom py-2">
     <div class="type flex align-center mx-3 my-2 justify-between">
       <div class="flex justify-items-start align-center">
@@ -233,6 +233,7 @@ const props = defineProps({
   cover: String,
   brief: String,
   claim: String,
+  title: String,
 });
 const bookList = ref([]);
 const podcastList = ref([]);

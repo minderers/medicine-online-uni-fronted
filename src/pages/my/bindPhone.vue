@@ -110,21 +110,24 @@ const handleSubmit = async () => {
 .bg {
   background-image: url("https://medicine-online-uni-fronted.oss-cn-hangzhou.aliyuncs.com/action_bg.png");
   background-size: cover;
-  height: 100vh;
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 .banner {
   height: 100rpx;
+  padding: 0 30rpx;
 }
 .content {
   font-size: 32rpx;
 }
 
 .container {
-  margin: 70rpx 100rpx;
+  margin: 70rpx 40rpx;
   font-size: 36rpx;
+  width: auto;
 }
 .phone-number {
   width: 100%; // 可以考虑改为固定像素值等，看效果
@@ -132,7 +135,8 @@ const handleSubmit = async () => {
 }
 .line {
   border-bottom: 1px solid #e0e0e0;
-  width: 80%;
+  width: 100%;
+  margin: 20rpx 0;
 }
 
 .code {
@@ -141,11 +145,17 @@ const handleSubmit = async () => {
 .code-container {
   display: flex;
   align-items: center;
-  // justify-content: space-between;
+  justify-content: space-between;
   margin-top: 40rpx;
+  width: 100%;
+}
+.code-number {
+  flex: 1;
+  margin-right: 20rpx;
 }
 .getcode {
   color: #04964b;
+  white-space: nowrap;
 }
 .button {
   background-color: #00a651;
