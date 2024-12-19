@@ -1,6 +1,6 @@
 <template>
-  <view class="m-2 mt-10 bc-grey">
-    <view class="center">活动</view>
+  <view class="m-2 bc-grey">
+    <Noback><slot> 活动 </slot></Noback>
     <view
       v-for="(item, index) in activityList"
       :key="index"
@@ -25,6 +25,7 @@
 </template>
 
 <script setup>
+import Noback from "../../components/noback.vue";
 import { onMounted, ref } from "vue";
 import { getVoteActivityList } from "../../service/activity";
 
