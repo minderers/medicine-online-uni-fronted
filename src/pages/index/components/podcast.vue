@@ -40,7 +40,7 @@
 
       <!-- 文字进度显示 -->
       <div class="time-display">
-        {{ formatTime(currentTime) }} / {{ formatTime(duration) }}
+        {{ formatTime(currentTime) }} / {{ formatTime(dura) }}
       </div>
     </div>
   </div>
@@ -61,11 +61,11 @@ const props = defineProps({
 // 音频播放相关的状态
 const isPlaying = ref(false); // 默认是暂停状态
 const currentTime = ref(0); // 当前播放时间
-const duration = ref(props.currentAudioDuration); // 音频总时长
+const dura = ref(props.currentAudioDuration); // 音频总时长
 let audioContext = null;
 
 const progressPercentage = computed(() =>
-  duration.value > 0 ? (currentTime.value / duration.value) * 100 : 0
+  dura.value > 0 ? (currentTime.value / dura.value) * 100 : 0
 );
 const initAudio = () => {
   audioContext = wx.createInnerAudioContext();
@@ -134,7 +134,7 @@ const formatTime = (time) => {
 watch(
   () => props.currentAudioDuration,
   (newDuration) => {
-    duration.value = newDuration;
+    dura.value = newDuration;
   }
 );
 
@@ -153,7 +153,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (audioContext) {
-    audioContext.stop();
+    audioContext.destroy();
   }
   if (animationIntervalId) {
     clearInterval(animationIntervalId);

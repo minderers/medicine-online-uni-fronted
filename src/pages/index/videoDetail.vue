@@ -103,8 +103,15 @@ onMounted(() => {
 // ⻚⾯触底加载数据
 onReachBottom(() => getAllVideos());
 const toVideo = (item) => {
+  // 跳转到详情页
   uni.navigateTo({
-    url: `/pages/index/ResourceDetail?id=${item.pkId}`,
+    url: `/pages/index/ResourceDetail?title=${encodeURIComponent(
+      item.title
+    )}&browseNum=${encodeURIComponent(
+      item.browseNum
+    )}&starNum=${encodeURIComponent(item.starNum)}&pkId=${encodeURIComponent(
+      item.pkId
+    )}`,
   });
 };
 </script>

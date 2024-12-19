@@ -24,10 +24,8 @@
   >
     <swiper-item v-for="(item, index) in tabBars" :key="index">
       <scroll-view scroll-y="true" :style="'height:' + scrollH + 'px;'">
-        <Tag :categoryId="item.pkId" v-if="index != 3" />
-        <Banner
-          v-if="index === 0 || index === 1 || index === 2 || index === 4"
-        />
+        <Tag :categoryId="item.pkId" v-if="index != 3 && index != 4" />
+        <Banner v-if="index === 0 || index === 1 || index === 2" />
         <NewResource v-if="index === 0" />
         <News v-if="index === 1" />
         <knowledgeBase v-if="index === 3" />
@@ -87,6 +85,13 @@ onMounted(() => {
 
 // 点击切换选项卡
 const changeTab = async (index) => {
+  if (index === 4) {
+    // 如果点击的是第5个选项(index为4)，跳转到考试页面
+    uni.switchTab({
+      url: "/pages/test/test",
+    });
+    return;
+  }
   navIndex.value = index;
   const categoryId = tabBars.value[index].pkId;
   const subcategories = await getCategoryListByParentId(categoryId);

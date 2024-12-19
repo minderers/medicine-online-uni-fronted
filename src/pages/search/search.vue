@@ -13,7 +13,7 @@
       <input
         v-model="searchTitle"
         placeholder="输入关键字搜索"
-        @keydown.enter="handleSearch"
+        @confirm="handleSearch"
         style="
           color: black;
           border: none;
@@ -53,9 +53,9 @@
         v-for="result in search.list"
         :key="result.pkId"
         class="search-result-item"
+        @click="toDetail(result)"
       >
         <view v-if="result.leixing === 1" class="leixing1">
-
           <image :src="result.cover" mode="scaleToFill" class="subject-img" />
           <text class="mx-2" style="font-size: 35rpx">{{ result.title }}</text>
 
@@ -296,6 +296,89 @@ onReachBottom(() => {
     onSearch();
   }
 });
+
+// 添加跳转详情方法
+const toDetail = (item) => {
+  // 保存浏览记录
+  let history = uni.getStorageSync("browseHistory") || [];
+
+  // 构造浏览记录对象
+  const record = {
+    pkId: item.pkId,
+    title: item.title,
+    cover: item.cover,
+    label: item.label,
+    browseNum: item.browseNum || 0,
+    starNum: item.starNum || 0,
+    type: item.leixing === 2 ? "news" : "resource", // 根据 leixing 判断类型
+  };
+
+  // 检查是否已存在相同记录
+  const existIndex = history.findIndex((h) => h.pkId === item.pkId);
+  if (existIndex !== -1) {
+    history.splice(existIndex, 1);
+  }
+
+  // 将新记录添加到开头
+  history.unshift(record);
+
+  // 限制记录数量为50
+  if (history.length > 50) {
+    history = history.slice(0, 50);
+  }
+
+  // 保存到本地存储
+  uni.setStorageSync("browseHistory", history);
+
+  // 根据不同类型跳转到对应页面
+  switch (
+    item.leixing // 使用 leixing 而不是 resType
+  ) {
+    case 1: // 专题
+      uni.navigateTo({
+        url: `/pages/index/banner-msg?pkId=${encodeURIComponent(
+          item.pkId
+        )}&cover=${encodeURIComponent(item.cover)}&title=${encodeURIComponent(
+          item.title
+        )}`,
+      });
+      break;
+    case 2: // 新闻
+      uni.navigateTo({
+        url: `/pages/index/NewsDetail?pkId=${encodeURIComponent(item.pkId)}`,
+      });
+      break;
+    case 3: // 视频资源
+      uni.navigateTo({
+        url: `/pages/index/ResourceDetail?title=${encodeURIComponent(
+          item.title
+        )}&browseNum=${encodeURIComponent(
+          item.browseNum
+        )}&starNum=${encodeURIComponent(
+          item.starNum
+        )}&pkId=${encodeURIComponent(item.pkId)}`,
+      });
+      break;
+    case 4: // 音频
+      const query = `title=${encodeURIComponent(
+        item.title
+      )}&browseNum=${encodeURIComponent(
+        item.browseNum
+      )}&starNum=${encodeURIComponent(item.starNum)}&pkId=${encodeURIComponent(
+        item.pkId
+      )}&cover=${encodeURIComponent(item.cover)}`;
+      uni.navigateTo({
+        url: `/pages/index/podcastDetail?${query}`,
+      });
+      break;
+    default:
+      console.error("未知内容类型:", item.leixing);
+      uni.showToast({
+        title: "未知内容类型",
+        icon: "none",
+      });
+  }
+};
 </script>
 
 <style lang="scss" scoped>

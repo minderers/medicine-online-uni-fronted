@@ -4,29 +4,19 @@
     <div class="">
       <image :src="cover" mode="scaleToFill" class="banner-img" />
     </div>
-    <div
-      class="brief"
-      :class="{ 'is-collapsed': !isBriefVisible }"
-      :style="{ maxHeight: isBriefVisible ? 'none' : '4em' }"
+    <view
+      class="mt-2 indent-lg px-4 pb-2"
+      :class="{ 'clamp-text': !isExpanded }"
     >
-      <p>{{ brief }}</p>
-    </div>
-    <div @click="toggleBriefVisibility" class="my-2">
-      <div v-if="!isBriefVisible" class="show-more">
-        <image
-          src="../../static/index/icon_xialai@3x.png"
-          mode="scaleToFill"
-          class="xiala"
-        />
-      </div>
-      <div v-else class="show-more">
-        <image
-          src="../../static/index/icon_xiala2@3x.png"
-          mode="scaleToFill"
-          class="xiala"
-        />
-      </div>
-    </div>
+      <text class="content experience">{{ brief || title }}</text>
+    </view>
+    <view class="flex justify-center" @click="toggleExpand">
+      <image
+        class="w-5 h-5 transform duration-300 cursor-pointer"
+        :class="{ 'rotate-180': !isExpanded }"
+        src="../../static/expertBank/icon_xialai@3x.png"
+      />
+    </view>
   </div>
   <div class="type flex justify-items-start align-center mx-3 my-2">
     <div class="icon">
@@ -38,7 +28,7 @@
     </div>
     <div class="ml-2 title">学习要求</div>
   </div>
-  <div class="claim mx-3 pb-2 border-bottom">{{ claim }}</div>
+  <div class="claim mx-3 pb-2 border-bottom">{{ claim || title }}</div>
   <div class="book border-bottom py-2">
     <div class="type flex align-center mx-3 my-2 justify-between">
       <div class="flex justify-items-start align-center">
@@ -115,7 +105,7 @@
           </div>
           <div class="w-100 mx-3 my-1">
             <div class="left">
-              <div class="text-lg text-e">{{ item.title }}</div>
+              <div class="text-lg text-e text-ellipsis">{{ item.title }}</div>
             </div>
             <div class="flex justify-between align-center my-2 bottom mt-6">
               <div
@@ -243,6 +233,7 @@ const props = defineProps({
   cover: String,
   brief: String,
   claim: String,
+  title: String,
 });
 const bookList = ref([]);
 const podcastList = ref([]);
@@ -295,7 +286,11 @@ const toBook = (item) => {
     url: `/pages/index/bookDetail?${query}`,
   });
 };
+const isExpanded = ref(true);
 
+const toggleExpand = () => {
+  isExpanded.value = !isExpanded.value;
+};
 const toPodcast = (item) => {
   const query = `title=${encodeURIComponent(
     item.title
@@ -311,6 +306,21 @@ const toPodcast = (item) => {
 </script>
 
 <style scoped>
+.experience {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.3s ease-in-out;
+  line-clamp: 3;
+}
+
+.clamp-text .experience {
+  -webkit-line-clamp: unset;
+  display: block;
+  line-clamp: unset;
+}
 .banner-img {
   width: 100%;
   height: 250rpx;
@@ -367,6 +377,14 @@ const toPodcast = (item) => {
 }
 .item2 {
   position: relative;
+}
+.text-ellipsis {
+  overflow: hidden; /* 确保内容超出容器时会被隐藏 */
+  display: -webkit-box; /* 使用弹性盒子布局模型 */
+  -webkit-line-clamp: 1; /* 限制在两行 */
+  -webkit-box-orient: vertical; /* 垂直排列盒子 */
+  text-overflow: ellipsis; /* 多余文本用省略号表示 */
+  white-space: normal; /* 使用正常的白空格处理方式，允许换行 */
 }
 .mask {
   position: absolute; /* 绝对定位 */
